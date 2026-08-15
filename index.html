@@ -1,0 +1,2679 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>성균 룸메</title>
+<style>
+  :root {
+    --bg: #F3F5F8;
+    --surface: #FFFFFF;
+    --surface-2: #EDEFF3;
+    --ink: #131B2E;
+    --ink-soft: #5B6478;
+    --ink-faint: #8A93A6;
+    --line: #DDE1E8;
+    --accent: #1F6F5C;
+    --accent-ink: #FFFFFF;
+    --accent-soft: #E4F0EC;
+    --warn: #C1432A;
+    --warn-soft: #FBEAE5;
+    --panel-bg: #10192B;
+    --panel-ink: #F3F6FA;
+    --panel-ink-soft: #AEB8CD;
+    --panel-line: #29344C;
+    --panel-accent: #6FD9BB;
+    --shadow: 0 20px 50px -20px rgba(19, 27, 46, 0.35);
+    --radius-lg: 20px;
+    --radius-md: 12px;
+    --radius-sm: 8px;
+    --font-sans: "Pretendard", "Apple SD Gothic Neo", "Malgun Gothic", "Segoe UI", sans-serif;
+    --font-mono: ui-monospace, "SFMono-Regular", "Consolas", "Roboto Mono", monospace;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #0F1420;
+      --surface: #171E2E;
+      --surface-2: #1E2740;
+      --ink: #EAEDF4;
+      --ink-soft: #9BA3B7;
+      --ink-faint: #6C7690;
+      --line: #2A3350;
+      --accent: #4FBE9E;
+      --accent-ink: #0B1410;
+      --accent-soft: #16332C;
+      --warn: #E77860;
+      --warn-soft: #3A1E18;
+      --shadow: 0 20px 50px -20px rgba(0, 0, 0, 0.6);
+    }
+  }
+
+  :root[data-theme="dark"] {
+    --bg: #0F1420;
+    --surface: #171E2E;
+    --surface-2: #1E2740;
+    --ink: #EAEDF4;
+    --ink-soft: #9BA3B7;
+    --ink-faint: #6C7690;
+    --line: #2A3350;
+    --accent: #4FBE9E;
+    --accent-ink: #0B1410;
+    --accent-soft: #16332C;
+    --warn: #E77860;
+    --warn-soft: #3A1E18;
+    --shadow: 0 20px 50px -20px rgba(0, 0, 0, 0.6);
+  }
+
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0;
+    padding: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+  }
+  body { min-height: 100vh; }
+  h1, h2, h3, p { margin: 0; text-wrap: balance; }
+  button { font-family: inherit; }
+  input, textarea { font-family: inherit; }
+  ::selection { background: var(--accent-soft); color: var(--accent); }
+
+  :focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+
+  .app { min-height: 100vh; }
+
+  /* ---------- CONFIG BANNER ---------- */
+  .config-banner {
+    display: none;
+    position: sticky;
+    top: 0;
+    z-index: 200;
+    background: var(--warn);
+    color: #fff;
+    font-size: 0.82rem;
+    padding: 10px 20px;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    text-align: center;
+    line-height: 1.5;
+  }
+  .config-banner.show { display: flex; }
+  .config-banner code {
+    font-family: var(--font-mono);
+    background: rgba(255,255,255,0.18);
+    padding: 1px 6px;
+    border-radius: 4px;
+  }
+  .config-banner button {
+    background: rgba(255,255,255,0.2);
+    border: none;
+    color: #fff;
+    border-radius: 999px;
+    width: 22px; height: 22px;
+    cursor: pointer;
+    flex: none;
+    font-size: 0.8rem;
+  }
+
+  /* ---------- PAGE 1 : LANDING / AUTH ---------- */
+  .landing {
+    min-height: 100vh;
+    display: grid;
+    grid-template-columns: minmax(320px, 46%) 1fr;
+  }
+  @media (max-width: 880px) {
+    .landing { grid-template-columns: 1fr; }
+  }
+
+  .panel {
+    background: var(--panel-bg);
+    color: var(--panel-ink);
+    padding: clamp(32px, 5vw, 72px) clamp(28px, 5vw, 64px);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 34px;
+    position: relative;
+    overflow: hidden;
+  }
+  .panel::before {
+    content: "";
+    position: absolute;
+    inset: -40% -20% auto auto;
+    width: 480px; height: 480px;
+    background: radial-gradient(circle, rgba(111, 217, 187, 0.16), transparent 65%);
+    pointer-events: none;
+  }
+
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    color: var(--panel-ink);
+    font-size: 1.05rem;
+  }
+  .brand-mark {
+    width: 30px; height: 30px;
+    border-radius: 8px;
+    background: linear-gradient(155deg, var(--panel-accent), #2E8C71);
+    display: grid; place-items: center;
+    color: #0B1410;
+    font-weight: 800;
+    font-size: 0.85rem;
+    flex: none;
+  }
+
+  .panel-eyebrow {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--panel-accent);
+  }
+
+  .panel h1 {
+    font-size: clamp(1.7rem, 2.6vw, 2.3rem);
+    line-height: 1.32;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+  }
+  .panel h1 em {
+    font-style: normal;
+    color: var(--panel-accent);
+  }
+
+  .panel-lede {
+    color: var(--panel-ink-soft);
+    font-size: 1rem;
+    line-height: 1.75;
+    max-width: 46ch;
+  }
+
+  .pain-block {
+    border-top: 1px solid var(--panel-line);
+    padding-top: 22px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  .pain-label {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #7E8AA6;
+  }
+  .pain-list {
+    list-style: none;
+    margin: 0; padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .pain-list li {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    font-size: 0.93rem;
+    line-height: 1.6;
+    color: var(--panel-ink-soft);
+  }
+  .pain-list .pip {
+    flex: none;
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--panel-accent);
+    margin-top: 8px;
+  }
+  .pain-list strong {
+    color: var(--panel-ink);
+    font-weight: 600;
+  }
+
+  .resolve-card {
+    background: rgba(111, 217, 187, 0.08);
+    border: 1px solid rgba(111, 217, 187, 0.28);
+    border-radius: var(--radius-md);
+    padding: 18px 20px;
+    font-size: 0.93rem;
+    line-height: 1.65;
+    color: var(--panel-ink);
+  }
+  .resolve-card b { color: var(--panel-accent); }
+
+  /* ---------- AUTH SIDE ---------- */
+  .auth-side {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: clamp(28px, 5vw, 64px);
+    background:
+      radial-gradient(600px 400px at 85% -10%, var(--accent-soft), transparent 60%),
+      var(--bg);
+  }
+
+  .auth-card {
+    width: 100%;
+    max-width: 420px;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow);
+    padding: clamp(28px, 4vw, 40px);
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+  }
+
+  .auth-head h2 {
+    font-size: 1.4rem;
+    font-weight: 800;
+    letter-spacing: -0.015em;
+  }
+  .auth-head p {
+    margin-top: 6px;
+    color: var(--ink-soft);
+    font-size: 0.88rem;
+    line-height: 1.55;
+  }
+
+  .badge-row {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .badge {
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.06em;
+    padding: 5px 10px;
+    border-radius: 999px;
+    background: var(--accent-soft);
+    color: var(--accent);
+    border: 1px solid transparent;
+    font-weight: 600;
+  }
+
+  .field { display: flex; flex-direction: column; gap: 8px; }
+  .field label {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--ink-soft);
+  }
+  .input-row { display: flex; gap: 8px; }
+  .input-row input[type="email"],
+  .input-row input[type="text"] {
+    flex: 1;
+    min-width: 0;
+    padding: 12px 14px;
+    border-radius: var(--radius-sm);
+    border: 1.5px solid var(--line);
+    background: var(--surface);
+    color: var(--ink);
+    font-size: 0.95rem;
+    transition: border-color 0.15s ease;
+  }
+  .input-row input:focus { border-color: var(--accent); }
+
+  .btn {
+    appearance: none;
+    border: none;
+    cursor: pointer;
+    border-radius: var(--radius-sm);
+    padding: 12px 18px;
+    font-size: 0.9rem;
+    font-weight: 700;
+    transition: transform 0.08s ease, opacity 0.15s ease, background 0.15s ease;
+    white-space: nowrap;
+  }
+  .btn:active { transform: scale(0.98); }
+  .btn:disabled { cursor: not-allowed; opacity: 0.5; }
+  .btn-primary {
+    background: var(--accent);
+    color: var(--accent-ink);
+  }
+  .btn-primary:hover:not(:disabled) { opacity: 0.92; }
+  .btn-ghost {
+    background: var(--surface-2);
+    color: var(--ink);
+  }
+  .btn-ghost:hover:not(:disabled) { background: var(--line); }
+  .btn-block { width: 100%; }
+  .btn-text {
+    background: transparent;
+    color: var(--accent);
+    padding: 4px 2px;
+    font-weight: 600;
+    font-size: 0.82rem;
+    border: none;
+    cursor: pointer;
+  }
+
+  .msg {
+    font-size: 0.83rem;
+    line-height: 1.55;
+    padding: 11px 13px;
+    border-radius: var(--radius-sm);
+    display: none;
+    gap: 8px;
+  }
+  .msg.show { display: flex; }
+  .msg-error { background: var(--warn-soft); color: var(--warn); }
+  .msg-ok { background: var(--accent-soft); color: var(--accent); }
+
+  .otp-block, .name-block {
+    display: none;
+    flex-direction: column;
+    gap: 14px;
+    padding-top: 4px;
+    border-top: 1px dashed var(--line);
+  }
+  .otp-block.show, .name-block.show { display: flex; }
+
+  .info-notice {
+    font-size: 0.8rem;
+    line-height: 1.6;
+    background: var(--surface-2);
+    border-radius: var(--radius-sm);
+    padding: 10px 12px;
+    color: var(--ink-soft);
+  }
+
+  .otp-inputs {
+    display: flex;
+    gap: 8px;
+    justify-content: space-between;
+  }
+  .otp-inputs input {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    text-align: center;
+    font-family: var(--font-mono);
+    font-size: 1.2rem;
+    font-weight: 700;
+    border-radius: var(--radius-sm);
+    border: 1.5px solid var(--line);
+    background: var(--surface);
+    color: var(--ink);
+  }
+  .otp-inputs input:focus { border-color: var(--accent); }
+
+  .otp-meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 0.8rem;
+    color: var(--ink-soft);
+  }
+  .otp-meta .timer {
+    font-family: var(--font-mono);
+    font-variant-numeric: tabular-nums;
+    color: var(--ink);
+    font-weight: 600;
+  }
+  .otp-meta .timer.expired { color: var(--warn); }
+
+  .trust-foot {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.76rem;
+    color: var(--ink-faint);
+    padding-top: 4px;
+    border-top: 1px solid var(--line);
+  }
+
+  /* ---------- SHARED: RAIL LAYOUT (survey / match) ---------- */
+  .rail-page {
+    display: none;
+    min-height: 100vh;
+    grid-template-columns: 300px 1fr;
+  }
+  .rail-page.show { display: grid; }
+  @media (max-width: 880px) {
+    .rail-page.show { grid-template-columns: 1fr; }
+  }
+
+  .rail {
+    position: sticky;
+    top: 0;
+    align-self: start;
+    height: 100vh;
+    overflow-y: auto;
+    background: var(--panel-bg);
+    color: var(--panel-ink);
+    padding: 28px 26px;
+    display: flex;
+    flex-direction: column;
+    gap: 26px;
+  }
+  @media (max-width: 880px) {
+    .rail { position: static; height: auto; padding: 18px 20px; }
+  }
+
+  .rail-user {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.8rem;
+    color: var(--panel-ink-soft);
+    background: rgba(111,217,187,0.08);
+    border: 1px solid rgba(111,217,187,0.25);
+    border-radius: var(--radius-sm);
+    padding: 10px 12px;
+  }
+  .rail-user .dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--panel-accent);
+    flex: none;
+  }
+  .rail-user .email {
+    font-family: var(--font-mono);
+    color: var(--panel-ink);
+    font-size: 0.76rem;
+    word-break: break-all;
+  }
+
+  .rail-title {
+    font-size: 0.95rem;
+    font-weight: 800;
+    letter-spacing: -0.01em;
+  }
+  .rail-sub {
+    font-size: 0.8rem;
+    color: var(--panel-ink-soft);
+    line-height: 1.55;
+    margin-top: -14px;
+  }
+
+  .steps { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 2px; }
+  .steps li {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 9px 8px;
+    border-radius: var(--radius-sm);
+    font-size: 0.83rem;
+    color: var(--panel-ink-soft);
+    cursor: pointer;
+    transition: background 0.15s ease, color 0.15s ease;
+  }
+  .steps li:hover { background: rgba(255,255,255,0.04); }
+  .steps li .num {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    display: grid; place-items: center;
+    border: 1px solid var(--panel-line);
+    flex: none;
+  }
+  .steps li.active {
+    color: var(--panel-ink);
+    background: rgba(111,217,187,0.1);
+  }
+  .steps li.active .num {
+    background: var(--panel-accent);
+    border-color: var(--panel-accent);
+    color: #0B1410;
+    font-weight: 700;
+  }
+
+  .rail-link {
+    font-size: 0.78rem;
+    color: var(--panel-ink-soft);
+    background: transparent;
+    border: 1px solid var(--panel-line);
+    border-radius: var(--radius-sm);
+    padding: 9px 12px;
+    cursor: pointer;
+    text-align: left;
+  }
+  .rail-link:hover { border-color: var(--panel-accent); color: var(--panel-ink); }
+  .rail-logout { margin-top: auto; }
+
+  /* ---------- PAGE 2 : SURVEY ---------- */
+  .survey-main {
+    padding: clamp(24px, 4vw, 56px) clamp(20px, 5vw, 72px) 120px;
+    max-width: 680px;
+  }
+  .mobile-progress {
+    display: none;
+    position: sticky; top: 0; z-index: 5;
+    background: var(--bg);
+    padding: 14px 0 10px;
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    color: var(--ink-soft);
+  }
+  @media (max-width: 880px) {
+    .mobile-progress { display: block; }
+    .survey-main { padding: 0 20px 120px; }
+  }
+  .progress-track {
+    height: 4px;
+    background: var(--surface-2);
+    border-radius: 4px;
+    margin-top: 8px;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    width: 10%;
+    background: var(--accent);
+    transition: width 0.3s ease;
+  }
+
+  .page-head { padding: 8px 0 28px; }
+  .page-head h1 {
+    font-size: clamp(1.5rem, 3vw, 1.9rem);
+    font-weight: 800;
+    letter-spacing: -0.02em;
+  }
+  .page-head p {
+    margin-top: 10px;
+    color: var(--ink-soft);
+    font-size: 0.92rem;
+    line-height: 1.6;
+    max-width: 52ch;
+  }
+
+  .q-card {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    padding: clamp(22px, 3vw, 28px);
+    margin-bottom: 18px;
+    scroll-margin-top: 24px;
+  }
+  .q-eyebrow {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.1em;
+    color: var(--accent);
+    font-weight: 700;
+  }
+  .q-title {
+    margin-top: 6px;
+    font-size: 1.08rem;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+  }
+  .q-hint {
+    margin-top: 5px;
+    font-size: 0.83rem;
+    color: var(--ink-soft);
+    line-height: 1.55;
+  }
+
+  .q-body { margin-top: 18px; }
+  .sub-label {
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--ink-soft);
+    margin-bottom: 8px;
+  }
+  .sub-block + .sub-block { margin-top: 18px; }
+
+  .pill-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .pill-group input { position: absolute; opacity: 0; width: 0; height: 0; }
+  .pill {
+    padding: 9px 15px;
+    border-radius: 999px;
+    border: 1.5px solid var(--line);
+    background: var(--surface);
+    color: var(--ink-soft);
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.12s ease;
+    user-select: none;
+  }
+  .pill:hover { border-color: var(--accent); color: var(--ink); }
+  input:checked + .pill {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: var(--accent-ink);
+  }
+  input:focus-visible + .pill { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+  .field-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+  }
+  @media (max-width: 480px) { .field-grid { grid-template-columns: 1fr; } }
+
+  .text-field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .text-field label { font-size: 0.78rem; color: var(--ink-soft); font-weight: 600; }
+  .text-field .unit-row { display: flex; align-items: center; gap: 8px; }
+  .text-field input[type="time"],
+  .text-field input[type="date"],
+  .text-field input[type="number"],
+  .text-field input[type="text"] {
+    width: 100%;
+    padding: 10px 12px;
+    border-radius: var(--radius-sm);
+    border: 1.5px solid var(--line);
+    background: var(--surface);
+    color: var(--ink);
+    font-size: 0.92rem;
+    font-family: var(--font-mono);
+  }
+  .text-field select {
+    width: 100%;
+    padding: 10px 12px;
+    border-radius: var(--radius-sm);
+    border: 1.5px solid var(--line);
+    background: var(--surface);
+    color: var(--ink);
+    font-size: 0.9rem;
+    font-family: var(--font-sans);
+  }
+  .text-field input:focus, .text-field select:focus { border-color: var(--accent); }
+  .unit { font-size: 0.8rem; color: var(--ink-faint); white-space: nowrap; }
+
+  .submit-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-top: 8px;
+    flex-wrap: wrap;
+  }
+  .submit-note { font-size: 0.8rem; color: var(--ink-faint); }
+
+  /* ---------- PAGE 3 : MY TYPE + CANDIDATE LIST ---------- */
+  .type-card {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    padding: clamp(22px, 3vw, 30px);
+    margin-bottom: 24px;
+  }
+  .type-card-head {
+    display: flex;
+    align-items: baseline;
+    gap: 14px;
+    flex-wrap: wrap;
+  }
+  .type-code {
+    font-family: var(--font-mono);
+    font-size: clamp(2.2rem, 5vw, 3rem);
+    font-weight: 800;
+    letter-spacing: 0.05em;
+    color: var(--accent);
+  }
+  .type-name { color: var(--ink-soft); font-size: 0.92rem; }
+
+  .axis-bars { display: flex; flex-direction: column; gap: 16px; margin-top: 22px; }
+  .axis-bar { display: flex; flex-direction: column; gap: 6px; }
+  .axis-labels {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.82rem;
+    font-weight: 600;
+  }
+  .axis-labels .pos { color: var(--accent); }
+  .axis-labels .neg { color: var(--ink-faint); }
+  .axis-track {
+    height: 10px;
+    border-radius: 999px;
+    background: var(--surface-2);
+    overflow: hidden;
+  }
+  .axis-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent), var(--panel-accent));
+    border-radius: 999px;
+    transition: width 0.5s ease;
+  }
+
+  .list-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    margin-bottom: 14px;
+  }
+  .list-head h2 { font-size: 1.05rem; font-weight: 800; }
+  .list-head span { font-size: 0.8rem; color: var(--ink-faint); }
+
+  .candidate-list { display: flex; flex-direction: column; gap: 10px; }
+  .candidate-item {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 16px;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--line);
+    background: var(--surface);
+    cursor: pointer;
+    text-align: left;
+    width: 100%;
+    transition: border-color 0.12s ease, transform 0.08s ease;
+  }
+  .candidate-item:hover { border-color: var(--accent); }
+  .candidate-item:active { transform: scale(0.995); }
+  .avatar {
+    width: 42px; height: 42px;
+    border-radius: 50%;
+    background: var(--accent-soft);
+    color: var(--accent);
+    display: grid; place-items: center;
+    font-weight: 800;
+    font-size: 0.95rem;
+    flex: none;
+  }
+  .candidate-main { flex: 1; min-width: 0; }
+  .candidate-name { font-weight: 700; font-size: 0.95rem; }
+  .candidate-code {
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    color: var(--ink-soft);
+    margin-top: 2px;
+  }
+  .similarity-pill {
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: var(--accent);
+    background: var(--accent-soft);
+    padding: 5px 10px;
+    border-radius: 999px;
+    flex: none;
+  }
+  .empty-note {
+    font-size: 0.85rem;
+    color: var(--ink-faint);
+    padding: 18px;
+    text-align: center;
+    border: 1px dashed var(--line);
+    border-radius: var(--radius-md);
+  }
+
+  .resume-banner {
+    display: none;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    background: var(--accent-soft);
+    color: var(--accent);
+    border-radius: var(--radius-md);
+    padding: 14px 18px;
+    margin-bottom: 22px;
+    font-size: 0.87rem;
+    flex-wrap: wrap;
+  }
+  .resume-banner.show { display: flex; }
+
+  /* ---------- CHAT POPUP ---------- */
+  .chat-popup {
+    position: fixed;
+    right: 20px;
+    bottom: 20px;
+    width: min(360px, calc(100vw - 40px));
+    max-height: min(520px, calc(100vh - 40px));
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow);
+    display: none;
+    flex-direction: column;
+    overflow: hidden;
+    z-index: 100;
+    opacity: 0;
+    transform: translateY(16px);
+    transition: opacity 0.18s ease, transform 0.18s ease;
+  }
+  .chat-popup.show { display: flex; opacity: 1; transform: translateY(0); }
+  @media (prefers-reduced-motion: reduce) {
+    .chat-popup { transition: none; }
+  }
+
+  .chat-header {
+    background: var(--panel-bg);
+    color: var(--panel-ink);
+    padding: 12px 14px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    flex: none;
+  }
+  .chat-header-name {
+    font-weight: 700;
+    font-size: 0.9rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .chat-header-right { display: flex; align-items: center; gap: 8px; flex: none; }
+  .chat-close {
+    background: transparent;
+    border: none;
+    color: var(--panel-ink-soft);
+    font-size: 1.1rem;
+    line-height: 1;
+    cursor: pointer;
+    padding: 4px;
+    border-radius: 6px;
+  }
+  .chat-close:hover { color: var(--panel-ink); background: rgba(255,255,255,0.08); }
+
+  .contract-btn {
+    font-family: var(--font-sans);
+    font-size: 0.76rem;
+    font-weight: 700;
+    padding: 6px 12px;
+    border-radius: 999px;
+    border: 1px solid var(--panel-accent);
+    background: transparent;
+    color: var(--panel-accent);
+    cursor: pointer;
+    white-space: nowrap;
+  }
+  .contract-btn:hover:not(:disabled) { background: rgba(111,217,187,0.12); }
+  .contract-btn.waiting {
+    color: var(--panel-ink-soft);
+    border-color: var(--panel-line);
+    cursor: default;
+  }
+  .contract-btn.accept {
+    background: var(--panel-accent);
+    color: #0B1410;
+  }
+  .contract-btn:disabled { opacity: 0.8; }
+
+  .chat-messages {
+    flex: 1;
+    overflow-y: auto;
+    padding: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    background: var(--surface-2);
+    min-height: 200px;
+  }
+  .chat-empty {
+    margin: auto;
+    font-size: 0.82rem;
+    color: var(--ink-faint);
+    text-align: center;
+  }
+  .msg-bubble {
+    max-width: 78%;
+    padding: 8px 12px;
+    border-radius: 14px;
+    font-size: 0.86rem;
+    line-height: 1.45;
+    word-break: break-word;
+  }
+  .msg-bubble.them {
+    align-self: flex-start;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-bottom-left-radius: 4px;
+  }
+  .msg-bubble.me {
+    align-self: flex-end;
+    background: var(--accent);
+    color: var(--accent-ink);
+    border-bottom-right-radius: 4px;
+  }
+
+  .chat-input-row {
+    flex: none;
+    display: flex;
+    gap: 8px;
+    padding: 10px;
+    border-top: 1px solid var(--line);
+    background: var(--surface);
+  }
+  .chat-input-row input {
+    flex: 1;
+    min-width: 0;
+    padding: 9px 12px;
+    border-radius: 999px;
+    border: 1.5px solid var(--line);
+    background: var(--bg);
+    color: var(--ink);
+    font-size: 0.86rem;
+  }
+  .chat-input-row input:focus { border-color: var(--accent); }
+  .chat-send {
+    flex: none;
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    background: var(--accent);
+    color: var(--accent-ink);
+    border: none;
+    cursor: pointer;
+    font-size: 1rem;
+    display: grid; place-items: center;
+  }
+  .chat-send:hover { opacity: 0.9; }
+
+  /* ---------- PAGE 4 : CONTRACT ---------- */
+  .contract-parties {
+    display: flex;
+    gap: 14px;
+    margin-bottom: 22px;
+    flex-wrap: wrap;
+  }
+  .party-chip {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    padding: 8px 14px 8px 8px;
+    font-size: 0.85rem;
+    font-weight: 600;
+  }
+
+  .sign-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    padding: 20px 22px;
+    margin-top: 6px;
+  }
+  .sign-status { display: flex; flex-direction: column; gap: 10px; }
+  .sign-status-row { display: flex; align-items: center; gap: 10px; font-size: 0.88rem; }
+  .sign-dot {
+    width: 10px; height: 10px; border-radius: 50%;
+    background: var(--line);
+    flex: none;
+  }
+  .sign-dot.done { background: var(--accent); }
+  .sign-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+
+  .celebrate {
+    display: none;
+    text-align: center;
+    padding: clamp(40px, 8vw, 70px) 20px;
+  }
+  .celebrate.show { display: block; }
+  .celebrate .badge-icon {
+    width: 64px; height: 64px;
+    border-radius: 50%;
+    background: var(--accent-soft);
+    color: var(--accent);
+    display: grid; place-items: center;
+    font-size: 1.8rem;
+    margin: 0 auto 18px;
+    animation: pop-in 0.4s ease;
+  }
+  @keyframes pop-in {
+    from { transform: scale(0.6); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .celebrate .badge-icon { animation: none; }
+  }
+  .celebrate h1 { font-size: 1.6rem; font-weight: 800; }
+  .celebrate p { margin-top: 10px; color: var(--ink-soft); line-height: 1.6; }
+  .celebrate .btn { margin-top: 22px; }
+
+  .printable {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    padding: clamp(24px, 4vw, 34px);
+    max-width: 720px;
+  }
+  .printable h2 { font-size: 1.15rem; font-weight: 800; margin-bottom: 4px; }
+  .printable .sub { font-size: 0.8rem; color: var(--ink-faint); margin-bottom: 20px; }
+  .printable dl { display: grid; grid-template-columns: 1fr 1fr; gap: 12px 20px; }
+  .printable .full { grid-column: 1 / -1; }
+  .printable dt { font-size: 0.74rem; color: var(--ink-faint); text-transform: uppercase; letter-spacing: 0.04em; }
+  .printable dd { margin: 4px 0 0; font-size: 0.92rem; font-weight: 600; }
+  .printable hr { border: none; border-top: 1px solid var(--line); margin: 18px 0; }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { transition: none !important; }
+  }
+</style>
+</head>
+<body>
+
+<div class="config-banner" id="configBanner">
+  <span>⚠ Supabase 설정이 비어 있어요. <code>index.html</code> 상단 스크립트의 SUPABASE_URL / SUPABASE_ANON_KEY를 채워주세요.</span>
+  <button id="configBannerClose" aria-label="닫기">✕</button>
+</div>
+
+<div class="app">
+
+  <!-- ================= PAGE 1: LANDING + AUTH ================= -->
+  <section class="landing" id="landingPage">
+
+    <!-- LEFT: problem statement / rationale -->
+    <div class="panel">
+      <div class="brand">
+        <span class="brand-mark">성</span>
+        성균 룸메
+      </div>
+
+      <div>
+        <div class="panel-eyebrow">Why we built this</div>
+        <h1 style="margin-top:10px;">기숙사는 부족하고, 자취는 <em>너무 비쌉니다.</em></h1>
+        <p class="panel-lede" style="margin-top:14px;">
+          대학교 기숙사 수용 인원은 턱없이 부족하고, 자취를 하자니 개인이 감당하기엔 너무 큰 경제적 부담이 됩니다.
+          그렇다고 룸메이트를 아무렇게나 구할 수도 없는 노릇입니다.
+        </p>
+      </div>
+
+      <div class="pain-block">
+        <div class="pain-label">Pain Point</div>
+        <ul class="pain-list">
+          <li>
+            <span class="pip"></span>
+            <span><strong>신원을 확인할 방법이 없습니다.</strong> 에브리타임, 당근마켓, 오픈채팅방으로 룸메이트를 구하려니 재학생 여부나 범죄 이력을 확인할 길이 없어, 사기와 범죄에 대한 두려움이 큽니다.</span>
+          </li>
+          <li>
+            <span class="pip"></span>
+            <span><strong>생활 패턴이 안 맞으면 계약 후가 더 고통스럽습니다.</strong> 흡연 여부, 취침 시간, 청소 주기에 대한 기준이 다르면 함께 사는 내내 크고 작은 갈등이 생길 확률이 높습니다.</span>
+          </li>
+        </ul>
+      </div>
+
+      <div class="resolve-card">
+        그래서 저희는 <b>학교 이메일 인증</b>으로 신원을 먼저 확인하고, <b>라이프스타일 매칭</b>으로 나와 결이 맞는
+        룸메이트를 안전하게 찾을 수 있도록 설계했습니다.
+      </div>
+    </div>
+
+    <!-- RIGHT: login / email auth -->
+    <div class="auth-side">
+      <div class="auth-card">
+
+        <div class="auth-head">
+          <h2>학생 인증으로 시작하기</h2>
+          <p id="authHeadDesc">매 방문마다 학교 이메일 인증을 새로 진행합니다. 성균관대학교 재학생만 이용할 수 있어요.</p>
+        </div>
+
+        <div class="badge-row" id="badgeRow">
+          <span class="badge">@g.skku.edu</span>
+          <span class="badge">@skku.edu</span>
+        </div>
+
+        <!-- Step 1: email -->
+        <div class="field" id="emailStep">
+          <label for="emailInput">학교 이메일</label>
+          <div class="input-row">
+            <input type="email" id="emailInput" placeholder="20xxxxxx@g.skku.edu" autocomplete="email" />
+            <button class="btn btn-primary" id="sendCodeBtn">인증번호 받기</button>
+          </div>
+        </div>
+
+        <div class="msg msg-error" id="domainError">
+          <span>⚠</span>
+          <span id="domainErrorText">성균관대학교 학생이 아닙니다. @g.skku.edu 또는 @skku.edu 이메일로만 인증할 수 있어요.</span>
+        </div>
+
+        <!-- Step 2: OTP -->
+        <div class="otp-block" id="otpBlock">
+          <div class="info-notice" id="otpNotice">
+            입력하신 학교 이메일로 6자리 인증번호를 보냈어요. 받은편지함(스팸함 포함)을 확인해주세요.
+          </div>
+
+          <div class="field">
+            <label>인증번호 6자리 입력</label>
+            <div class="otp-inputs" id="otpInputs">
+              <input inputmode="numeric" maxlength="1" />
+              <input inputmode="numeric" maxlength="1" />
+              <input inputmode="numeric" maxlength="1" />
+              <input inputmode="numeric" maxlength="1" />
+              <input inputmode="numeric" maxlength="1" />
+              <input inputmode="numeric" maxlength="1" />
+            </div>
+            <div class="otp-meta">
+              <span>재전송 가능까지 <span class="timer" id="otpTimer">2:00</span></span>
+              <button class="btn-text" id="resendBtn" disabled>인증번호 재전송</button>
+            </div>
+          </div>
+
+          <div class="msg msg-error" id="otpError">
+            <span>⚠</span>
+            <span id="otpErrorText">인증번호가 일치하지 않습니다. 다시 확인해주세요.</span>
+          </div>
+          <div class="msg msg-ok" id="otpOk">
+            <span>✓</span>
+            <span id="otpOkText">인증이 완료되었습니다…</span>
+          </div>
+
+          <button class="btn btn-primary btn-block" id="verifyBtn">인증하기</button>
+        </div>
+
+        <!-- Step 3: name (first login only) -->
+        <div class="name-block" id="nameBlock">
+          <div class="info-notice">첫 인증이시네요! 다른 사용자에게 표시될 이름을 입력해주세요.</div>
+          <div class="field">
+            <label for="nameInput">이름 (닉네임 가능)</label>
+            <div class="input-row">
+              <input type="text" id="nameInput" placeholder="예: 정재준" autocomplete="name" maxlength="20" />
+            </div>
+          </div>
+          <button class="btn btn-primary btn-block" id="saveNameBtn">이름 저장하고 계속하기</button>
+        </div>
+
+        <div class="trust-foot">
+          🔒 인증 정보는 이 세션에만 사용되며, 매 방문 시 새로 인증이 필요합니다.
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= PAGE 2: LIFESTYLE SURVEY ================= -->
+  <section class="rail-page" id="surveyPage">
+    <aside class="rail">
+      <div class="brand" style="color:var(--panel-ink);">
+        <span class="brand-mark">성</span>
+        성균 룸메
+      </div>
+
+      <div class="rail-user">
+        <span class="dot"></span>
+        <div>
+          인증 완료<br />
+          <span class="email" id="verifiedEmailLabel">student@g.skku.edu</span>
+        </div>
+      </div>
+
+      <div>
+        <div class="rail-title">라이프스타일 프로필</div>
+        <p class="rail-sub">10가지 질문에 답하면 생활 패턴이 잘 맞는 룸메이트를 찾는 데 활용돼요.</p>
+      </div>
+
+      <ul class="steps" id="stepsList"></ul>
+
+      <button class="rail-link rail-logout" id="logoutBtn">다른 이메일로 다시 인증하기</button>
+    </aside>
+
+    <main class="survey-main">
+      <div class="mobile-progress">
+        <span id="mobileProgressText">1 / 10 완료</span>
+        <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+      </div>
+
+      <div class="page-head">
+        <h1>나의 생활 패턴을 알려주세요</h1>
+        <p>정직하게 답할수록 더 잘 맞는 룸메이트를 만날 확률이 높아집니다. 제출하면 부지런함·깔끔함·예민함·예산 4가지 축으로 나의 유형을 계산해요.</p>
+      </div>
+
+      <form id="surveyForm">
+        <!-- Q1 -->
+        <div class="q-card" data-step="1">
+          <div class="q-eyebrow">Q1 · 수면 패턴</div>
+          <div class="q-title">평소 취침 시간과 기상 시간이 어떻게 되나요?</div>
+          <div class="q-hint">같이 사는 사람의 생활 리듬이 얼마나 겹치는지 확인하는 데 쓰여요.</div>
+          <div class="q-body">
+            <div class="sub-block">
+              <div class="sub-label">취침 시간</div>
+              <div class="pill-group" data-name="bedtime">
+                <label><input type="radio" name="bedtime" value="~24시" /><span class="pill">~24시</span></label>
+                <label><input type="radio" name="bedtime" value="24~02시" /><span class="pill">24~02시</span></label>
+                <label><input type="radio" name="bedtime" value="02시 이후" /><span class="pill">02시 이후</span></label>
+              </div>
+            </div>
+            <div class="sub-block">
+              <div class="text-field" style="max-width:220px;">
+                <label for="wakeTime">기상 시간</label>
+                <input type="time" id="wakeTime" name="wakeTime" />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Q2 -->
+        <div class="q-card" data-step="2">
+          <div class="q-eyebrow">Q2 · 수면 패턴</div>
+          <div class="q-title">알람 소리에 얼마나 민감한 편인가요?</div>
+          <div class="q-hint">한 명의 알람에 다른 사람이 깨는 상황을 미리 조율하기 위한 질문이에요.</div>
+          <div class="q-body">
+            <div class="pill-group" data-name="alarm">
+              <label><input type="radio" name="alarm" value="매우 민감함" /><span class="pill">매우 민감함</span></label>
+              <label><input type="radio" name="alarm" value="보통" /><span class="pill">보통</span></label>
+              <label><input type="radio" name="alarm" value="잘 안 깸" /><span class="pill">잘 안 깸</span></label>
+            </div>
+          </div>
+        </div>
+
+        <!-- Q3 -->
+        <div class="q-card" data-step="3">
+          <div class="q-eyebrow">Q3 · 위생 / 청소</div>
+          <div class="q-title">청소는 보통 얼마나 자주 하나요?</div>
+          <div class="q-body">
+            <div class="pill-group" data-name="cleaning">
+              <label><input type="radio" name="cleaning" value="매일" /><span class="pill">매일</span></label>
+              <label><input type="radio" name="cleaning" value="주 2~3회" /><span class="pill">주 2~3회</span></label>
+              <label><input type="radio" name="cleaning" value="주 1회" /><span class="pill">주 1회</span></label>
+            </div>
+          </div>
+        </div>
+
+        <!-- Q4 -->
+        <div class="q-card" data-step="4">
+          <div class="q-eyebrow">Q4 · 위생 / 청소</div>
+          <div class="q-title">설거지는 바로 하는 편인가요?</div>
+          <div class="q-body">
+            <div class="pill-group" data-name="dishes">
+              <label><input type="radio" name="dishes" value="바로 하는 편" /><span class="pill">바로 하는 편</span></label>
+              <label><input type="radio" name="dishes" value="모아서 하는 편" /><span class="pill">모아서 하는 편</span></label>
+            </div>
+          </div>
+        </div>
+
+        <!-- Q5 -->
+        <div class="q-card" data-step="5">
+          <div class="q-eyebrow">Q5 · 소음 / 생활</div>
+          <div class="q-title">실내에서 전화 통화는 주로 어디서 하나요?</div>
+          <div class="q-body">
+            <div class="pill-group" data-name="callPlace">
+              <label><input type="radio" name="callPlace" value="방 안에서" /><span class="pill">방 안에서</span></label>
+              <label><input type="radio" name="callPlace" value="거실 또는 복도에서" /><span class="pill">거실 또는 복도에서</span></label>
+            </div>
+          </div>
+        </div>
+
+        <!-- Q6 -->
+        <div class="q-card" data-step="6">
+          <div class="q-eyebrow">Q6 · 소음 / 생활</div>
+          <div class="q-title">평소 이어폰(헤드폰)을 착용하는 편인가요?</div>
+          <div class="q-body">
+            <div class="pill-group" data-name="earphone">
+              <label><input type="radio" name="earphone" value="항상 착용" /><span class="pill">항상 착용</span></label>
+              <label><input type="radio" name="earphone" value="상황에 따라" /><span class="pill">상황에 따라</span></label>
+              <label><input type="radio" name="earphone" value="착용 안 함" /><span class="pill">착용 안 함</span></label>
+            </div>
+          </div>
+        </div>
+
+        <!-- Q7 -->
+        <div class="q-card" data-step="7">
+          <div class="q-eyebrow">Q7 · 사회적 성향</div>
+          <div class="q-title">친구나 지인을 자취방에 초대하는 편인가요?</div>
+          <div class="q-body">
+            <div class="pill-group" data-name="guests">
+              <label><input type="radio" name="guests" value="사전 협의 필수" /><span class="pill">사전 협의 필수</span></label>
+              <label><input type="radio" name="guests" value="절대 불가" /><span class="pill">절대 불가</span></label>
+              <label><input type="radio" name="guests" value="자유로움" /><span class="pill">자유로움</span></label>
+            </div>
+          </div>
+        </div>
+
+        <!-- Q8 -->
+        <div class="q-card" data-step="8">
+          <div class="q-eyebrow">Q8 · 사회적 성향</div>
+          <div class="q-title">음주는 얼마나 자주 하나요?</div>
+          <div class="q-body">
+            <div class="pill-group" data-name="drinking">
+              <label><input type="radio" name="drinking" value="거의 안 마심" /><span class="pill">거의 안 마심</span></label>
+              <label><input type="radio" name="drinking" value="주 1~2회" /><span class="pill">주 1~2회</span></label>
+              <label><input type="radio" name="drinking" value="주 3회 이상" /><span class="pill">주 3회 이상</span></label>
+            </div>
+          </div>
+        </div>
+
+        <!-- Q9 -->
+        <div class="q-card" data-step="9">
+          <div class="q-eyebrow">Q9 · 희망 주거 조건</div>
+          <div class="q-title">희망하는 지역은 어디인가요?</div>
+          <div class="q-hint">학교(성균관대)를 기준으로 반경 몇 km 이내를 원하는지 알려주세요.</div>
+          <div class="q-body">
+            <div class="text-field" style="max-width:220px;">
+              <label for="radiusKm">학교 기준 반경</label>
+              <div class="unit-row">
+                <input type="number" id="radiusKm" name="radiusKm" min="0" step="0.5" placeholder="1.5" />
+                <span class="unit">km 이내</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Q10 -->
+        <div class="q-card" data-step="10">
+          <div class="q-eyebrow">Q10 · 희망 주거 조건</div>
+          <div class="q-title">본인이 부담 가능한 보증금 · 월세 범위는요?</div>
+          <div class="q-hint">예: 보증금 1,000 / 월 40~50 (단위: 만 원)</div>
+          <div class="q-body">
+            <div class="field-grid">
+              <div class="text-field">
+                <label for="deposit">보증금</label>
+                <div class="unit-row">
+                  <input type="number" id="deposit" name="deposit" min="0" placeholder="1000" />
+                  <span class="unit">만 원</span>
+                </div>
+              </div>
+              <div class="text-field">
+                <label for="rentMin">월세 (최소~최대)</label>
+                <div class="unit-row">
+                  <input type="number" id="rentMin" name="rentMin" min="0" placeholder="40" />
+                  <span class="unit">~</span>
+                  <input type="number" id="rentMax" name="rentMax" min="0" placeholder="50" />
+                  <span class="unit">만 원</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="submit-row">
+          <span class="submit-note" id="answeredCount">0 / 10 문항 응답</span>
+          <button type="submit" class="btn btn-primary" id="submitBtn">프로필 제출하고 유형 보기</button>
+        </div>
+      </form>
+    </main>
+  </section>
+
+  <!-- ================= PAGE 3: MY TYPE + CANDIDATE LIST ================= -->
+  <section class="rail-page" id="matchPage">
+    <aside class="rail">
+      <div class="brand" style="color:var(--panel-ink);">
+        <span class="brand-mark">성</span>
+        성균 룸메
+      </div>
+
+      <div class="rail-user">
+        <span class="dot"></span>
+        <div>
+          <span id="matchNameLabel">이름</span><br />
+          <span class="email" id="matchEmailLabel">student@g.skku.edu</span>
+        </div>
+      </div>
+
+      <div>
+        <div class="rail-title">매칭 대시보드</div>
+        <p class="rail-sub">나와 생활 패턴이 비슷한 순서로 후보를 정렬했어요. 이름을 누르면 실시간 채팅이 열려요.</p>
+      </div>
+
+      <button class="rail-link" id="editSurveyBtn">라이프스타일 답변 수정</button>
+      <button class="rail-link rail-logout" id="logoutBtn2">다른 이메일로 다시 인증하기</button>
+    </aside>
+
+    <main class="survey-main">
+      <div class="page-head">
+        <h1>나의 룸메이트 유형</h1>
+        <p>설문 답변을 바탕으로 4가지 축의 위치를 계산했어요. 각 축에서 왼쪽 값이 높을수록 진하게 표시돼요.</p>
+      </div>
+
+      <div class="resume-banner" id="resumeBanner">
+        <span id="resumeBannerText">진행 중인 계약이 있어요.</span>
+        <button class="btn btn-primary" id="resumeBannerBtn" style="padding:8px 14px;">이어서 작성하기</button>
+      </div>
+
+      <div class="type-card">
+        <div class="type-card-head">
+          <span class="type-code" id="myTypeCode">부깔예빠</span>
+          <span class="type-name" id="myTypeName"></span>
+        </div>
+        <div class="axis-bars" id="myAxisBars"></div>
+      </div>
+
+      <div class="list-head">
+        <h2>매칭 후보</h2>
+        <span id="candidateCount">0명</span>
+      </div>
+      <div class="candidate-list" id="candidateList">
+        <div class="empty-note">아직 다른 학생의 응답이 없어요. 친구에게 링크를 공유해보세요.</div>
+      </div>
+    </main>
+  </section>
+
+  <!-- ================= PAGE 4: CONTRACT GENERATOR ================= -->
+  <section class="rail-page" id="contractPage">
+    <aside class="rail">
+      <div class="brand" style="color:var(--panel-ink);">
+        <span class="brand-mark">성</span>
+        성균 룸메
+      </div>
+      <div class="rail-user">
+        <span class="dot"></span>
+        <div>
+          계약서 작성 중<br />
+          <span class="email" id="contractRoomLabel">-</span>
+        </div>
+      </div>
+      <div>
+        <div class="rail-title">표준 생활·정산 협약서</div>
+        <p class="rail-sub">두 사람이 같은 화면을 동시에 채워요. 저장은 자동으로 반영됩니다.</p>
+      </div>
+      <button class="rail-link rail-logout" id="backToMatchBtn">매칭 목록으로 돌아가기</button>
+    </aside>
+
+    <main class="survey-main" style="max-width:760px;">
+      <div class="page-head">
+        <h1 id="contractHeading">표준 룸메이트 생활 · 정산 협약서</h1>
+        <p>보증금·월세 납부, 공과금 정산, 중도 퇴실 조항까지 체크리스트로 정리하고 함께 서명하세요.</p>
+      </div>
+
+      <div class="contract-parties" id="contractParties"></div>
+
+      <form id="contractForm">
+        <div class="q-card">
+          <div class="q-eyebrow">1 · 보증금 · 월세 납부</div>
+          <div class="q-title">납부일과 입금 계좌를 지정해주세요</div>
+          <div class="q-body">
+            <div class="field-grid">
+              <div class="text-field">
+                <label for="c_depositDate">보증금 납부일</label>
+                <input type="date" id="c_depositDate" />
+              </div>
+              <div class="text-field">
+                <label for="c_depositAccount">보증금 입금 계좌</label>
+                <input type="text" id="c_depositAccount" placeholder="은행 / 예금주 / 계좌번호" />
+              </div>
+              <div class="text-field">
+                <label for="c_rentDay">매월 월세 납부일</label>
+                <input type="number" id="c_rentDay" min="1" max="28" placeholder="예: 25" />
+              </div>
+              <div class="text-field">
+                <label for="c_rentAccount">월세 입금 계좌</label>
+                <input type="text" id="c_rentAccount" placeholder="은행 / 예금주 / 계좌번호" />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="q-card">
+          <div class="q-eyebrow">2 · 공과금 · 생필품 정산</div>
+          <div class="q-title">수도 · 전기 · 가스 · 인터넷 및 생필품을 어떻게 나눌까요?</div>
+          <div class="q-body">
+            <div class="sub-block">
+              <div class="sub-label">정산 방식</div>
+              <div class="pill-group" data-name="c_splitRule">
+                <label><input type="radio" name="c_splitRule" value="1/N 균등 분할" /><span class="pill">1/N 균등 분할</span></label>
+                <label><input type="radio" name="c_splitRule" value="사용량 비례 분할" /><span class="pill">사용량 비례 분할</span></label>
+              </div>
+            </div>
+            <div class="sub-block field-grid">
+              <div class="text-field">
+                <label for="c_settleCycle">정산 주기</label>
+                <input type="text" id="c_settleCycle" placeholder="예: 매월 말일" />
+              </div>
+              <div class="text-field">
+                <label for="c_settleMethod">정산 방법</label>
+                <input type="text" id="c_settleMethod" placeholder="예: 계좌이체 / 정산 앱" />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="q-card">
+          <div class="q-eyebrow">3 · 중도 퇴실 조항</div>
+          <div class="q-title">중도 퇴실 시 위약금과 대체 세입자 구인 의무를 명시해주세요</div>
+          <div class="q-body">
+            <div class="field-grid">
+              <div class="text-field">
+                <label for="c_penalty">위약금</label>
+                <div class="unit-row">
+                  <input type="number" id="c_penalty" min="0" placeholder="50" />
+                  <span class="unit">만 원</span>
+                </div>
+              </div>
+              <div class="text-field">
+                <label for="c_noticeWeeks">대체 세입자 구인 의무 기간</label>
+                <div class="unit-row">
+                  <input type="number" id="c_noticeWeeks" min="0" placeholder="4" />
+                  <span class="unit">주</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </form>
+
+      <div class="sign-row">
+        <div class="sign-status">
+          <div class="sign-status-row"><span class="sign-dot" id="signDotA"></span><span id="signLabelA">A · 서명 대기</span></div>
+          <div class="sign-status-row"><span class="sign-dot" id="signDotB"></span><span id="signLabelB">B · 서명 대기</span></div>
+        </div>
+        <div class="sign-actions">
+          <button class="btn btn-ghost" id="downloadImgBtn" type="button">이미지로 다운로드</button>
+          <button class="btn btn-ghost" id="downloadPdfBtn" type="button">PDF로 다운로드</button>
+          <button class="btn btn-primary" id="signBtn" type="button">공동 서명(확인 완료)</button>
+        </div>
+      </div>
+
+      <div class="celebrate" id="celebrateBox">
+        <div class="badge-icon">🎉</div>
+        <h1>계약 완료!</h1>
+        <p>두 분 모두 서명을 마쳤어요. 안전하고 즐거운 동거 생활 되시길 바라요.</p>
+      </div>
+    </main>
+  </section>
+
+</div>
+
+<!-- ================= CHAT POPUP ================= -->
+<div class="chat-popup" id="chatPopup">
+  <div class="chat-header">
+    <button class="contract-btn" id="contractBtn">계약</button>
+    <span class="chat-header-name" id="chatPartnerName">채팅 상대</span>
+    <div class="chat-header-right">
+      <button class="chat-close" id="chatCloseBtn" aria-label="채팅 닫기">✕</button>
+    </div>
+  </div>
+  <div class="chat-messages" id="chatMessages">
+    <div class="chat-empty">아직 대화가 없어요. 먼저 인사를 건네보세요!</div>
+  </div>
+  <div class="chat-input-row">
+    <input type="text" id="chatInput" placeholder="메시지를 입력하세요" maxlength="500" />
+    <button class="chat-send" id="chatSendBtn" aria-label="전송">➤</button>
+  </div>
+</div>
+
+<!-- ================= PRINTABLE CONTRACT (for PDF/image export) ================= -->
+<div class="printable" id="printableContract" style="position:fixed; left:-9999px; top:0;">
+  <h2>표준 룸메이트 생활 · 정산 협약서</h2>
+  <div class="sub" id="printSub">성균 룸메 · <span id="printDate"></span></div>
+  <dl>
+    <div><dt>당사자 A</dt><dd id="p_partyA">-</dd></div>
+    <div><dt>당사자 B</dt><dd id="p_partyB">-</dd></div>
+    <div class="full"><hr /></div>
+    <div><dt>보증금 납부일</dt><dd id="p_depositDate">-</dd></div>
+    <div><dt>보증금 입금 계좌</dt><dd id="p_depositAccount">-</dd></div>
+    <div><dt>월세 납부일</dt><dd id="p_rentDay">-</dd></div>
+    <div><dt>월세 입금 계좌</dt><dd id="p_rentAccount">-</dd></div>
+    <div class="full"><hr /></div>
+    <div><dt>공과금·생필품 정산 방식</dt><dd id="p_splitRule">-</dd></div>
+    <div><dt>정산 주기</dt><dd id="p_settleCycle">-</dd></div>
+    <div><dt>정산 방법</dt><dd id="p_settleMethod">-</dd></div>
+    <div><dt>&nbsp;</dt><dd>&nbsp;</dd></div>
+    <div class="full"><hr /></div>
+    <div><dt>중도 퇴실 위약금</dt><dd id="p_penalty">-</dd></div>
+    <div><dt>대체 세입자 구인 의무 기간</dt><dd id="p_noticeWeeks">-</dd></div>
+    <div class="full"><hr /></div>
+    <div><dt>A 서명</dt><dd id="p_signA">미서명</dd></div>
+    <div><dt>B 서명</dt><dd id="p_signB">미서명</dd></div>
+  </dl>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+
+<script>
+(function () {
+  "use strict";
+
+  /* =========================================================
+     0. SUPABASE CONFIG
+     아래 두 값을 Supabase 프로젝트 정보로 바꿔주세요.
+     Project Settings > API 에서 확인할 수 있습니다.
+  ========================================================= */
+  var SUPABASE_URL = "https://ethwkqgwhkimfupgbpaa.supabase.co";
+  var SUPABASE_ANON_KEY = "sb_publishable_hbh7Lbopx-AI4sB5G47MOw_ZGaexAk6";
+
+  var CONFIGURED =
+    SUPABASE_URL.indexOf("YOUR-SUPABASE") === -1 &&
+    SUPABASE_ANON_KEY.indexOf("YOUR-SUPABASE") === -1;
+
+  var sb = null;
+  if (CONFIGURED && window.supabase && window.supabase.createClient) {
+    sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+      auth: { persistSession: false, autoRefreshToken: false }
+    });
+  }
+
+  var configBanner = document.getElementById("configBanner");
+  if (!CONFIGURED) configBanner.classList.add("show");
+  document.getElementById("configBannerClose").addEventListener("click", function () {
+    configBanner.classList.remove("show");
+  });
+
+  function requireConfig(errorBoxTextEl, errorBoxEl) {
+    if (CONFIGURED && sb) return true;
+    if (errorBoxTextEl) errorBoxTextEl.textContent = "Supabase 설정이 필요합니다. 페이지 상단 안내를 확인해주세요.";
+    if (errorBoxEl) errorBoxEl.classList.add("show");
+    configBanner.classList.add("show");
+    return false;
+  }
+
+  /* =========================================================
+     1. SHARED STATE
+  ========================================================= */
+  var VALID_DOMAINS = ["g.skku.edu", "skku.edu"];
+  var currentUser = null;       // { id, email, name }
+  var otpTimerHandle = null;
+  var otpSecondsLeft = 120;
+  var pendingEmail = "";
+  var myPct = null;             // computed axis percentages for current user
+  var currentContract = null;   // active contract_requests row while on page 4
+
+  var pages = {
+    landing: document.getElementById("landingPage"),
+    survey: document.getElementById("surveyPage"),
+    match: document.getElementById("matchPage"),
+    contract: document.getElementById("contractPage")
+  };
+
+  function showOnly(name) {
+    pages.landing.style.display = name === "landing" ? "grid" : "none";
+    ["survey", "match", "contract"].forEach(function (k) {
+      pages[k].classList.toggle("show", k === name);
+    });
+    window.scrollTo(0, 0);
+  }
+
+  function showMsg(el) { el.classList.add("show"); }
+  function hideMsg(el) { el.classList.remove("show"); }
+  function normalizeEmail(v) { return (v || "").trim().toLowerCase(); }
+
+  function isSkkuEmail(email) {
+    var at = email.indexOf("@");
+    if (at === -1) return false;
+    var domain = email.slice(at + 1);
+    return VALID_DOMAINS.indexOf(domain) !== -1;
+  }
+
+  /* =========================================================
+     2. AUTH : EMAIL DOMAIN GATE + SUPABASE OTP
+  ========================================================= */
+  var emailInput = document.getElementById("emailInput");
+  var sendCodeBtn = document.getElementById("sendCodeBtn");
+  var domainError = document.getElementById("domainError");
+  var domainErrorText = document.getElementById("domainErrorText");
+  var otpBlock = document.getElementById("otpBlock");
+  var otpInputsWrap = document.getElementById("otpInputs");
+  var otpInputs = Array.prototype.slice.call(otpInputsWrap.querySelectorAll("input"));
+  var otpTimerEl = document.getElementById("otpTimer");
+  var resendBtn = document.getElementById("resendBtn");
+  var verifyBtn = document.getElementById("verifyBtn");
+  var otpError = document.getElementById("otpError");
+  var otpErrorText = document.getElementById("otpErrorText");
+  var otpOk = document.getElementById("otpOk");
+  var nameBlock = document.getElementById("nameBlock");
+  var nameInput = document.getElementById("nameInput");
+  var saveNameBtn = document.getElementById("saveNameBtn");
+
+  function resetOtpInputs() {
+    otpInputs.forEach(function (inp) { inp.value = ""; });
+    otpInputs[0].focus();
+  }
+
+  function startResendCooldown() {
+    clearInterval(otpTimerHandle);
+    otpSecondsLeft = 120;
+    resendBtn.disabled = true;
+    otpTimerEl.classList.remove("expired");
+    renderTimer();
+    otpTimerHandle = setInterval(function () {
+      otpSecondsLeft -= 1;
+      if (otpSecondsLeft <= 0) {
+        otpSecondsLeft = 0;
+        clearInterval(otpTimerHandle);
+        resendBtn.disabled = false;
+      }
+      renderTimer();
+    }, 1000);
+  }
+
+  function renderTimer() {
+    var m = Math.floor(otpSecondsLeft / 60);
+    var s = otpSecondsLeft % 60;
+    otpTimerEl.textContent = m + ":" + (s < 10 ? "0" : "") + s;
+  }
+
+  async function sendCode() {
+    hideMsg(domainError); hideMsg(otpError); hideMsg(otpOk);
+    otpBlock.classList.remove("show");
+    nameBlock.classList.remove("show");
+
+    var email = normalizeEmail(emailInput.value);
+
+    if (!email || email.indexOf("@") === -1) {
+      domainErrorText.textContent = "이메일 주소를 정확히 입력해주세요.";
+      showMsg(domainError);
+      return;
+    }
+    if (!isSkkuEmail(email)) {
+      domainErrorText.textContent = "성균관대학교 학생이 아닙니다. @g.skku.edu 또는 @skku.edu 이메일로만 인증할 수 있어요.";
+      showMsg(domainError);
+      return;
+    }
+    if (!requireConfig(domainErrorText, domainError)) return;
+
+    pendingEmail = email;
+    sendCodeBtn.disabled = true;
+    sendCodeBtn.textContent = "발송 중…";
+
+    var { error } = await sb.auth.signInWithOtp({
+      email: email,
+      options: { shouldCreateUser: true }
+    });
+
+    sendCodeBtn.disabled = false;
+    sendCodeBtn.textContent = "인증번호 재발송";
+
+    if (error) {
+      domainErrorText.textContent = "인증번호 발송에 실패했어요: " + error.message;
+      showMsg(domainError);
+      return;
+    }
+
+    otpBlock.classList.add("show");
+    resetOtpInputs();
+    startResendCooldown();
+  }
+
+  async function verifyCode() {
+    hideMsg(otpError); hideMsg(otpOk);
+
+    var entered = otpInputs.map(function (inp) { return inp.value; }).join("");
+    if (entered.length < 6) {
+      otpErrorText.textContent = "6자리 인증번호를 모두 입력해주세요.";
+      showMsg(otpError);
+      return;
+    }
+    if (!requireConfig(otpErrorText, otpError)) return;
+
+    verifyBtn.disabled = true;
+    verifyBtn.textContent = "확인 중…";
+
+    var { data, error } = await sb.auth.verifyOtp({
+      email: pendingEmail,
+      token: entered,
+      type: "email"
+    });
+
+    verifyBtn.disabled = false;
+    verifyBtn.textContent = "인증하기";
+
+    if (error || !data || !data.user) {
+      otpErrorText.textContent = "인증번호가 일치하지 않습니다. 다시 확인해주세요.";
+      showMsg(otpError);
+      return;
+    }
+
+    showMsg(otpOk);
+    document.getElementById("otpOkText").textContent = "인증이 완료되었습니다…";
+
+    currentUser = { id: data.user.id, email: pendingEmail, name: null };
+
+    var { data: profileRow } = await sb
+      .from("profiles")
+      .select("id,name")
+      .eq("id", currentUser.id)
+      .maybeSingle();
+
+    if (profileRow && profileRow.name) {
+      currentUser.name = profileRow.name;
+      setTimeout(enterSurveyFlow, 500);
+    } else {
+      setTimeout(function () {
+        otpBlock.classList.remove("show");
+        nameBlock.classList.add("show");
+        nameInput.focus();
+      }, 400);
+    }
+  }
+
+  async function saveName() {
+    var name = (nameInput.value || "").trim();
+    if (!name) { nameInput.focus(); return; }
+    if (!requireConfig(null, null)) return;
+
+    saveNameBtn.disabled = true;
+    saveNameBtn.textContent = "저장 중…";
+
+    var { error } = await sb.from("profiles").upsert({
+      id: currentUser.id,
+      email: currentUser.email,
+      name: name
+    });
+
+    saveNameBtn.disabled = false;
+    saveNameBtn.textContent = "이름 저장하고 계속하기";
+
+    if (error) { alert("이름 저장에 실패했어요: " + error.message); return; }
+
+    currentUser.name = name;
+    enterSurveyFlow();
+  }
+
+  otpInputs.forEach(function (inp, idx) {
+    inp.addEventListener("input", function () {
+      inp.value = inp.value.replace(/[^0-9]/g, "").slice(0, 1);
+      if (inp.value && idx < otpInputs.length - 1) otpInputs[idx + 1].focus();
+    });
+    inp.addEventListener("keydown", function (e) {
+      if (e.key === "Backspace" && !inp.value && idx > 0) otpInputs[idx - 1].focus();
+      if (e.key === "Enter") verifyCode();
+    });
+    inp.addEventListener("paste", function (e) {
+      var text = (e.clipboardData || window.clipboardData).getData("text").replace(/[^0-9]/g, "");
+      if (!text) return;
+      e.preventDefault();
+      for (var i = 0; i < otpInputs.length; i++) otpInputs[i].value = text[i] || "";
+      var lastFilled = Math.min(text.length, otpInputs.length) - 1;
+      if (lastFilled >= 0) otpInputs[lastFilled].focus();
+    });
+  });
+
+  sendCodeBtn.addEventListener("click", sendCode);
+  resendBtn.addEventListener("click", function () { if (!resendBtn.disabled) sendCode(); });
+  verifyBtn.addEventListener("click", verifyCode);
+  saveNameBtn.addEventListener("click", saveName);
+  nameInput.addEventListener("keydown", function (e) { if (e.key === "Enter") saveName(); });
+  emailInput.addEventListener("keydown", function (e) { if (e.key === "Enter") { e.preventDefault(); sendCode(); } });
+
+  async function resetToLanding() {
+    clearInterval(otpTimerHandle);
+    if (sb) { try { await sb.auth.signOut(); } catch (e) {} }
+    currentUser = null;
+    myPct = null;
+    currentContract = null;
+    pendingEmail = "";
+    emailInput.value = "";
+    nameInput.value = "";
+    sendCodeBtn.textContent = "인증번호 받기";
+    verifyBtn.disabled = false;
+    otpBlock.classList.remove("show");
+    nameBlock.classList.remove("show");
+    hideMsg(domainError); hideMsg(otpError); hideMsg(otpOk);
+    closeChat();
+    showOnly("landing");
+  }
+
+  document.getElementById("logoutBtn").addEventListener("click", resetToLanding);
+  document.getElementById("logoutBtn2").addEventListener("click", resetToLanding);
+
+  /* =========================================================
+     3. PAGE 2 : SURVEY
+  ========================================================= */
+  var QUESTION_LABELS = [
+    "취침·기상 시간", "알람 민감도", "청소 주기", "설거지 습관",
+    "통화 장소", "이어폰 착용", "손님 초대", "음주 빈도",
+    "희망 지역", "보증금·월세"
+  ];
+
+  function buildSteps() {
+    var list = document.getElementById("stepsList");
+    list.innerHTML = "";
+    QUESTION_LABELS.forEach(function (label, i) {
+      var li = document.createElement("li");
+      li.dataset.step = i + 1;
+      li.innerHTML = '<span class="num">' + (i + 1) + '</span><span>' + label + '</span>';
+      li.addEventListener("click", function () {
+        var target = document.querySelector('.q-card[data-step="' + (i + 1) + '"]');
+        if (target) target.scrollIntoView({ behavior: "smooth", block: "start" });
+      });
+      list.appendChild(li);
+    });
+  }
+
+  var form = document.getElementById("surveyForm");
+
+  function fieldValue(name) {
+    var checked = form.querySelector('input[name="' + name + '"]:checked');
+    if (checked) return checked.value;
+    var el = document.getElementById(name);
+    return el ? el.value : "";
+  }
+
+  function setFieldValue(name, value) {
+    if (!value) return;
+    var radio = form.querySelector('input[name="' + name + '"][value="' + value + '"]');
+    if (radio) { radio.checked = true; return; }
+    var el = document.getElementById(name);
+    if (el) el.value = value;
+  }
+
+  async function enterSurveyFlow() {
+    document.getElementById("verifiedEmailLabel").textContent = currentUser.email;
+    buildSteps();
+    showOnly("survey");
+    setupScrollSpy();
+
+    if (sb) {
+      var { data: existing } = await sb
+        .from("lifestyle_profiles")
+        .select("*")
+        .eq("id", currentUser.id)
+        .maybeSingle();
+      if (existing) {
+        setFieldValue("bedtime", existing.bedtime);
+        setFieldValue("alarm", existing.alarm);
+        setFieldValue("cleaning", existing.cleaning);
+        setFieldValue("dishes", existing.dishes);
+        setFieldValue("callPlace", existing.call_place);
+        setFieldValue("earphone", existing.earphone);
+        setFieldValue("guests", existing.guests);
+        setFieldValue("drinking", existing.drinking);
+        if (existing.wake_time) document.getElementById("wakeTime").value = existing.wake_time;
+        if (existing.radius_km != null) document.getElementById("radiusKm").value = existing.radius_km;
+        if (existing.deposit != null) document.getElementById("deposit").value = existing.deposit;
+        if (existing.rent_min != null) document.getElementById("rentMin").value = existing.rent_min;
+        if (existing.rent_max != null) document.getElementById("rentMax").value = existing.rent_max;
+      }
+    }
+    updateAnsweredCount();
+  }
+
+  var observer = null;
+  function setupScrollSpy() {
+    var cards = Array.prototype.slice.call(document.querySelectorAll("#surveyPage .q-card"));
+    if (observer) observer.disconnect();
+    observer = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) setActiveStep(entry.target.dataset.step);
+      });
+    }, { rootMargin: "-20% 0px -70% 0px", threshold: 0 });
+    cards.forEach(function (c) { observer.observe(c); });
+  }
+
+  function setActiveStep(stepNum) {
+    var items = document.querySelectorAll("#stepsList li");
+    items.forEach(function (li) {
+      li.classList.toggle("active", String(parseInt(li.dataset.step, 10)) === String(stepNum));
+    });
+    document.getElementById("mobileProgressText").textContent = stepNum + " / 10";
+    document.getElementById("progressFill").style.width = (stepNum / 10 * 100) + "%";
+  }
+
+  function getAnsweredStepCount() {
+    var cards = document.querySelectorAll("#surveyPage .q-card");
+    var answered = 0;
+    cards.forEach(function (card) {
+      var radios = card.querySelectorAll('input[type="radio"]');
+      var texts = card.querySelectorAll('input[type="time"], input[type="number"]');
+      var ok = false;
+      if (radios.length) ok = Array.prototype.some.call(radios, function (r) { return r.checked; });
+      if (!ok && texts.length) ok = Array.prototype.some.call(texts, function (t) { return t.value !== ""; });
+      if (ok) answered++;
+    });
+    return answered;
+  }
+
+  function updateAnsweredCount() {
+    document.getElementById("answeredCount").textContent = getAnsweredStepCount() + " / 10 문항 응답";
+  }
+
+  form.addEventListener("change", updateAnsweredCount);
+  form.addEventListener("input", updateAnsweredCount);
+
+  /* ---- MBTI-STYLE TYPE SCORING ---- */
+  var AXES = [
+    { key: "diligencePct", dbKey: "diligence_pct", pos: "부지런함", neg: "게으름", posLetter: "부", negLetter: "게" },
+    { key: "cleanPct", dbKey: "clean_pct", pos: "깔끔함", neg: "너저분함", posLetter: "깔", negLetter: "너" },
+    { key: "sensitivityPct", dbKey: "sensitivity_pct", pos: "예민함", neg: "무던함", posLetter: "예", negLetter: "무" },
+    { key: "tightPct", dbKey: "tight_pct", pos: "예산 빠듯", neg: "예산 여유", posLetter: "빠", negLetter: "많" }
+  ];
+
+  function clampPct(n) { return Math.max(0, Math.min(100, Math.round(n))); }
+  function timeToMinutes(hhmm) {
+    var p = hhmm.split(":");
+    return (parseInt(p[0], 10) || 0) * 60 + (parseInt(p[1], 10) || 0);
+  }
+
+  function computeType(a) {
+    var s1 = 0;
+    if (a.wakeTime) {
+      var mins = timeToMinutes(a.wakeTime);
+      if (mins <= 8 * 60) s1 += 2;
+      else if (mins <= 9 * 60 + 30) s1 += 1;
+      else if (mins <= 11 * 60) s1 -= 1;
+      else s1 -= 2;
+    }
+    s1 += { "매우 민감함": 2, "보통": 0, "잘 안 깸": -2 }[a.alarm] || 0;
+    var diligencePct = clampPct((s1 + 4) / 8 * 100);
+
+    var s2 = 0;
+    s2 += { "매일": 2, "주 2~3회": 0, "주 1회": -2 }[a.cleaning] || 0;
+    s2 += { "바로 하는 편": 2, "모아서 하는 편": -2 }[a.dishes] || 0;
+    var cleanPct = clampPct((s2 + 4) / 8 * 100);
+
+    var s3 = 0;
+    s3 += { "방 안에서": 1, "거실 또는 복도에서": -1 }[a.callPlace] || 0;
+    s3 += { "항상 착용": 2, "상황에 따라": 0, "착용 안 함": -2 }[a.earphone] || 0;
+    s3 += { "절대 불가": 2, "사전 협의 필수": 1, "자유로움": -2 }[a.guests] || 0;
+    var sensitivityPct = clampPct((s3 + 5) / 10 * 100);
+
+    var deposit = parseFloat(a.deposit) || 0;
+    var rentMin = parseFloat(a.rentMin) || 0;
+    var rentMax = parseFloat(a.rentMax) || 0;
+    var rentAvg = (rentMin + rentMax) / 2;
+    var budgetCapacity = deposit + rentAvg * 12;
+    var amplePct = clampPct((budgetCapacity - 800) / (6000 - 800) * 100);
+    var tightPct = 100 - amplePct;
+
+    return { diligencePct: diligencePct, cleanPct: cleanPct, sensitivityPct: sensitivityPct, tightPct: tightPct };
+  }
+
+  function typeCodeOf(pct) {
+    return AXES.map(function (axis) {
+      return pct[axis.key] >= 50 ? axis.posLetter : axis.negLetter;
+    }).join("");
+  }
+
+  form.addEventListener("submit", async function (e) {
+    e.preventDefault();
+
+    var answers = {
+      bedtime: fieldValue("bedtime"),
+      wakeTime: fieldValue("wakeTime"),
+      alarm: fieldValue("alarm"),
+      cleaning: fieldValue("cleaning"),
+      dishes: fieldValue("dishes"),
+      callPlace: fieldValue("callPlace"),
+      earphone: fieldValue("earphone"),
+      guests: fieldValue("guests"),
+      drinking: fieldValue("drinking"),
+      radiusKm: fieldValue("radiusKm"),
+      deposit: fieldValue("deposit"),
+      rentMin: fieldValue("rentMin"),
+      rentMax: fieldValue("rentMax")
+    };
+
+    myPct = computeType(answers);
+
+    if (!requireConfig(null, null)) return;
+
+    var submitBtn = document.getElementById("submitBtn");
+    submitBtn.disabled = true;
+    submitBtn.textContent = "저장 중…";
+
+    var { error } = await sb.from("lifestyle_profiles").upsert({
+      id: currentUser.id,
+      bedtime: answers.bedtime || null,
+      wake_time: answers.wakeTime || null,
+      alarm: answers.alarm || null,
+      cleaning: answers.cleaning || null,
+      dishes: answers.dishes || null,
+      call_place: answers.callPlace || null,
+      earphone: answers.earphone || null,
+      guests: answers.guests || null,
+      drinking: answers.drinking || null,
+      radius_km: answers.radiusKm ? parseFloat(answers.radiusKm) : null,
+      deposit: answers.deposit ? parseFloat(answers.deposit) : null,
+      rent_min: answers.rentMin ? parseFloat(answers.rentMin) : null,
+      rent_max: answers.rentMax ? parseFloat(answers.rentMax) : null,
+      diligence_pct: myPct.diligencePct,
+      clean_pct: myPct.cleanPct,
+      sensitivity_pct: myPct.sensitivityPct,
+      tight_pct: myPct.tightPct,
+      type_code: typeCodeOf(myPct),
+      updated_at: new Date().toISOString()
+    });
+
+    submitBtn.disabled = false;
+    submitBtn.textContent = "프로필 제출하고 유형 보기";
+
+    if (error) { alert("저장에 실패했어요: " + error.message); return; }
+
+    enterMatchFlow();
+  });
+
+  document.getElementById("editSurveyBtn").addEventListener("click", function () {
+    buildSteps();
+    showOnly("survey");
+    setupScrollSpy();
+  });
+
+  /* =========================================================
+     4. PAGE 3 : MY TYPE + CANDIDATE LIST
+  ========================================================= */
+  function renderAxisBars(container, pct) {
+    container.innerHTML = "";
+    AXES.forEach(function (axis) {
+      var p = pct[axis.key];
+      var row = document.createElement("div");
+      row.className = "axis-bar";
+      row.innerHTML =
+        '<div class="axis-labels"><span class="pos">' + axis.pos + " " + p + '%</span>' +
+        '<span class="neg">' + (100 - p) + "% " + axis.neg + "</span></div>" +
+        '<div class="axis-track"><div class="axis-fill" style="width:' + p + '%"></div></div>';
+      container.appendChild(row);
+    });
+  }
+
+  function distancePct(a, b) {
+    var sum = 0;
+    AXES.forEach(function (axis) {
+      var d = (a[axis.key] - b[axis.key]) / 100;
+      sum += d * d;
+    });
+    return Math.sqrt(sum);
+  }
+
+  async function enterMatchFlow() {
+    document.getElementById("matchNameLabel").textContent = currentUser.name || currentUser.email;
+    document.getElementById("matchEmailLabel").textContent = currentUser.email;
+    document.getElementById("myTypeCode").textContent = typeCodeOf(myPct);
+    document.getElementById("myTypeName").textContent =
+      AXES.map(function (axis) { return myPct[axis.key] >= 50 ? axis.pos : axis.neg; }).join(" · ");
+    renderAxisBars(document.getElementById("myAxisBars"), myPct);
+
+    showOnly("match");
+    await loadCandidates();
+    await checkResumableContract();
+  }
+
+  async function loadCandidates() {
+    var listEl = document.getElementById("candidateList");
+    if (!requireConfig(null, null)) return;
+
+    var { data, error } = await sb
+      .from("lifestyle_profiles")
+      .select("id,diligence_pct,clean_pct,sensitivity_pct,tight_pct,type_code,profiles(name,is_demo)")
+      .neq("id", currentUser.id);
+
+    if (error) {
+      listEl.innerHTML = '<div class="empty-note">후보 목록을 불러오지 못했어요: ' + error.message + "</div>";
+      return;
+    }
+
+    var candidates = (data || []).map(function (row) {
+      var pct = {
+        diligencePct: row.diligence_pct, cleanPct: row.clean_pct,
+        sensitivityPct: row.sensitivity_pct, tightPct: row.tight_pct
+      };
+      var dist = distancePct(myPct, pct);
+      var similarity = clampPct((1 - dist / 2) * 100);
+      return {
+        id: row.id,
+        name: (row.profiles && row.profiles.name) || "이름 미설정",
+        isDemo: !!(row.profiles && row.profiles.is_demo),
+        typeCode: row.type_code || typeCodeOf(pct),
+        similarity: similarity,
+        dist: dist
+      };
+    });
+
+    candidates.sort(function (a, b) { return a.dist - b.dist; });
+
+    document.getElementById("candidateCount").textContent = candidates.length + "명";
+
+    if (!candidates.length) {
+      listEl.innerHTML = '<div class="empty-note">아직 다른 학생의 응답이 없어요. 친구에게 링크를 공유해보세요.</div>';
+      return;
+    }
+
+    listEl.innerHTML = "";
+    candidates.forEach(function (c) {
+      var item = document.createElement("button");
+      item.type = "button";
+      item.className = "candidate-item";
+      item.innerHTML =
+        '<span class="avatar">' + c.name.charAt(0) + "</span>" +
+        '<span class="candidate-main">' +
+        '<span class="candidate-name">' + c.name + (c.isDemo ? ' <span class="badge" style="vertical-align:1px;">예시</span>' : "") + "</span>" +
+        '<span class="candidate-code">' + c.typeCode + "</span>" +
+        "</span>" +
+        '<span class="similarity-pill">' + c.similarity + "% 유사</span>";
+      item.addEventListener("click", function () { openChat(c.id, c.name, c.isDemo); });
+      listEl.appendChild(item);
+    });
+  }
+
+  async function checkResumableContract() {
+    var banner = document.getElementById("resumeBanner");
+    banner.classList.remove("show");
+    if (!sb) return;
+
+    var { data } = await sb
+      .from("contract_requests")
+      .select("*")
+      .or("user_a.eq." + currentUser.id + ",user_b.eq." + currentUser.id)
+      .eq("a_confirmed", true)
+      .eq("b_confirmed", true);
+
+    if (data && data.length) {
+      var row = data[0];
+      document.getElementById("resumeBannerText").textContent =
+        "진행 중인 계약이 있어요 (" + data.length + "건).";
+      banner.classList.add("show");
+      document.getElementById("resumeBannerBtn").onclick = function () {
+        goToContractPage(row);
+      };
+    }
+  }
+
+  /* =========================================================
+     5. REAL-TIME CHAT POPUP
+  ========================================================= */
+  var chatPopup = document.getElementById("chatPopup");
+  var chatMessages = document.getElementById("chatMessages");
+  var chatInput = document.getElementById("chatInput");
+  var chatPartnerName = document.getElementById("chatPartnerName");
+  var contractBtn = document.getElementById("contractBtn");
+
+  var chatState = {
+    open: false,
+    partnerId: null,
+    partnerName: "",
+    isDemo: false,
+    roomId: null,
+    messagesChannel: null,
+    contractChannel: null,
+    contractRow: null,
+    userA: null,
+    userB: null
+  };
+
+  var DEMO_REPLIES = [
+    "안녕하세요! 반가워요 :)",
+    "저도 지금 방 알아보는 중이에요. 조건 잘 맞으면 좋겠네요!",
+    "생활 패턴 꽤 잘 맞는 것 같아요. 언제쯤 입주 생각하세요?",
+    "네 좋아요, 한번 자세히 이야기해봐요!"
+  ];
+  var demoReplyIndex = 0;
+
+  function roomIdFor(idA, idB) { return [idA, idB].sort().join("_"); }
+
+  async function openChat(partnerId, partnerName, isDemo) {
+    if (!requireConfig(null, null)) return;
+    if (chatState.open && chatState.partnerId === partnerId) return;
+    closeChat();
+
+    chatState.open = true;
+    chatState.partnerId = partnerId;
+    chatState.partnerName = partnerName;
+    chatState.isDemo = !!isDemo;
+    chatState.roomId = roomIdFor(currentUser.id, partnerId);
+    var ids = [currentUser.id, partnerId].sort();
+    chatState.userA = ids[0];
+    chatState.userB = ids[1];
+
+    chatPartnerName.textContent = partnerName;
+    chatMessages.innerHTML = '<div class="chat-empty">대화 내역을 불러오는 중…</div>';
+    chatPopup.classList.add("show");
+    chatInput.value = "";
+
+    var { data: history } = await sb
+      .from("messages")
+      .select("*")
+      .eq("room_id", chatState.roomId)
+      .order("created_at", { ascending: true });
+
+    renderMessages(history || []);
+    chatInput.focus();
+
+    chatState.messagesChannel = sb
+      .channel("messages-" + chatState.roomId)
+      .on("postgres_changes", {
+        event: "INSERT", schema: "public", table: "messages",
+        filter: "room_id=eq." + chatState.roomId
+      }, function (payload) { appendMessage(payload.new); })
+      .subscribe();
+
+    var { data: existingContract } = await sb
+      .from("contract_requests")
+      .select("*")
+      .eq("user_a", chatState.userA)
+      .eq("user_b", chatState.userB)
+      .maybeSingle();
+
+    chatState.contractRow = existingContract || null;
+    renderContractButton();
+
+    chatState.contractChannel = sb
+      .channel("contract-" + chatState.roomId)
+      .on("postgres_changes", {
+        event: "*", schema: "public", table: "contract_requests",
+        filter: "user_a=eq." + chatState.userA
+      }, function (payload) {
+        var row = payload.new;
+        if (!row || row.user_b !== chatState.userB) return;
+        chatState.contractRow = row;
+        renderContractButton();
+        if (row.a_confirmed && row.b_confirmed) goToContractPage(row);
+      })
+      .subscribe();
+  }
+
+  function closeChat() {
+    if (chatState.messagesChannel) { sb && sb.removeChannel(chatState.messagesChannel); }
+    if (chatState.contractChannel) { sb && sb.removeChannel(chatState.contractChannel); }
+    chatState = {
+      open: false, partnerId: null, partnerName: "", isDemo: false, roomId: null,
+      messagesChannel: null, contractChannel: null, contractRow: null,
+      userA: null, userB: null
+    };
+    chatPopup.classList.remove("show");
+  }
+
+  function renderMessages(list) {
+    chatMessages.innerHTML = "";
+    if (!list.length) {
+      chatMessages.innerHTML = '<div class="chat-empty">아직 대화가 없어요. 먼저 인사를 건네보세요!</div>';
+      return;
+    }
+    list.forEach(appendMessage);
+  }
+
+  function appendMessage(msg) {
+    var emptyNote = chatMessages.querySelector(".chat-empty");
+    if (emptyNote) emptyNote.remove();
+    var bubble = document.createElement("div");
+    bubble.className = "msg-bubble " + (msg.sender_id === currentUser.id ? "me" : "them");
+    bubble.textContent = msg.content;
+    chatMessages.appendChild(bubble);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+  }
+
+  async function sendMessage() {
+    var text = chatInput.value.trim();
+    if (!text || !chatState.open) return;
+    chatInput.value = "";
+    var isDemoChat = chatState.isDemo;
+    var roomId = chatState.roomId;
+    var partnerId = chatState.partnerId;
+    var myId = currentUser.id;
+
+    await sb.from("messages").insert({
+      room_id: roomId,
+      sender_id: myId,
+      receiver_id: partnerId,
+      content: text
+    });
+
+    if (isDemoChat) {
+      var reply = DEMO_REPLIES[demoReplyIndex % DEMO_REPLIES.length];
+      demoReplyIndex++;
+      setTimeout(function () {
+        if (!(chatState.open && chatState.roomId === roomId)) return; // 대화창을 이미 닫았으면 자동 응답을 보내지 않음
+        sb.from("messages").insert({
+          room_id: roomId,
+          sender_id: partnerId,
+          receiver_id: myId,
+          content: reply
+        });
+      }, 1200);
+    }
+  }
+
+  document.getElementById("chatSendBtn").addEventListener("click", sendMessage);
+  chatInput.addEventListener("keydown", function (e) { if (e.key === "Enter") sendMessage(); });
+  document.getElementById("chatCloseBtn").addEventListener("click", closeChat);
+  document.addEventListener("keydown", function (e) {
+    if (e.key === "Escape" && chatState.open) closeChat();
+  });
+
+  function renderContractButton() {
+    var row = chatState.contractRow;
+    var iAmA = currentUser.id === chatState.userA;
+    var myConfirmed = row ? (iAmA ? row.a_confirmed : row.b_confirmed) : false;
+    var otherConfirmed = row ? (iAmA ? row.b_confirmed : row.a_confirmed) : false;
+
+    contractBtn.className = "contract-btn";
+    contractBtn.disabled = false;
+
+    if (myConfirmed && otherConfirmed) {
+      contractBtn.textContent = "계약 성사!";
+      contractBtn.disabled = true;
+    } else if (myConfirmed && !otherConfirmed) {
+      contractBtn.textContent = "대기중";
+      contractBtn.classList.add("waiting");
+      contractBtn.disabled = true;
+    } else if (!myConfirmed && otherConfirmed) {
+      contractBtn.textContent = "수락";
+      contractBtn.classList.add("accept");
+    } else {
+      contractBtn.textContent = "계약";
+    }
+  }
+
+  async function confirmContract() {
+    if (!chatState.open) return;
+    var iAmA = currentUser.id === chatState.userA;
+    var myField = iAmA ? "a_confirmed" : "b_confirmed";
+
+    if (!chatState.contractRow) {
+      var insertRow = { user_a: chatState.userA, user_b: chatState.userB };
+      insertRow[myField] = true;
+      var { data } = await sb.from("contract_requests").insert(insertRow).select().maybeSingle();
+      chatState.contractRow = data;
+    } else {
+      var updateRow = {}; updateRow[myField] = true; updateRow.updated_at = new Date().toISOString();
+      var { data: updated } = await sb
+        .from("contract_requests")
+        .update(updateRow)
+        .eq("id", chatState.contractRow.id)
+        .select()
+        .maybeSingle();
+      chatState.contractRow = updated || Object.assign({}, chatState.contractRow, updateRow);
+    }
+    renderContractButton();
+    if (chatState.contractRow.a_confirmed && chatState.contractRow.b_confirmed) {
+      goToContractPage(chatState.contractRow);
+      return;
+    }
+
+    if (chatState.isDemo) {
+      var contractId = chatState.contractRow.id;
+      var partnerField = iAmA ? "b_confirmed" : "a_confirmed";
+      setTimeout(async function () {
+        var update = {}; update[partnerField] = true; update.updated_at = new Date().toISOString();
+        await sb.from("contract_requests").update(update).eq("id", contractId);
+        // 실제 반영은 위에서 이미 걸어둔 realtime 구독(postgres_changes)이 받아서
+        // renderContractButton() / goToContractPage()를 그대로 트리거합니다.
+      }, 1500);
+    }
+  }
+
+  contractBtn.addEventListener("click", confirmContract);
+
+  /* =========================================================
+     6. PAGE 4 : CONTRACT GENERATOR
+  ========================================================= */
+  var contractForm = document.getElementById("contractForm");
+  var contractFieldIds = [
+    "c_depositDate", "c_depositAccount", "c_rentDay", "c_rentAccount",
+    "c_settleCycle", "c_settleMethod", "c_penalty", "c_noticeWeeks"
+  ];
+  var contractRealtimeChannel = null;
+  var contractNameCache = {};
+  var contractCounterpartIsDemo = false;
+
+  async function nameForId(id) {
+    if (contractNameCache[id]) return contractNameCache[id];
+    var { data } = await sb.from("profiles").select("name,email").eq("id", id).maybeSingle();
+    var label = data ? (data.name || data.email) : id;
+    contractNameCache[id] = label;
+    return label;
+  }
+
+  async function isDemoProfile(id) {
+    var { data } = await sb.from("profiles").select("is_demo").eq("id", id).maybeSingle();
+    return !!(data && data.is_demo);
+  }
+
+  async function goToContractPage(row) {
+    closeChat();
+    currentContract = row;
+    var nameA = await nameForId(row.user_a);
+    var nameB = await nameForId(row.user_b);
+    var counterpartId = currentUser.id === row.user_a ? row.user_b : row.user_a;
+    contractCounterpartIsDemo = await isDemoProfile(counterpartId);
+
+    document.getElementById("contractRoomLabel").textContent = nameA + " · " + nameB;
+    document.getElementById("contractParties").innerHTML =
+      '<span class="party-chip"><span class="avatar" style="width:26px;height:26px;font-size:0.75rem;">' + nameA.charAt(0) + "</span>" + nameA + "</span>" +
+      '<span class="party-chip"><span class="avatar" style="width:26px;height:26px;font-size:0.75rem;">' + nameB.charAt(0) + "</span>" + nameB + "</span>";
+
+    document.getElementById("signLabelA").textContent = nameA + " · " + (row.a_signed ? "서명 완료" : "서명 대기");
+    document.getElementById("signLabelB").textContent = nameB + " · " + (row.b_signed ? "서명 완료" : "서명 대기");
+    document.getElementById("signDotA").classList.toggle("done", !!row.a_signed);
+    document.getElementById("signDotB").classList.toggle("done", !!row.b_signed);
+
+    applyContractData(row.contract_data || {});
+    document.getElementById("celebrateBox").classList.toggle("show", !!(row.a_signed && row.b_signed));
+    document.getElementById("contractForm").style.display = (row.a_signed && row.b_signed) ? "none" : "block";
+    document.querySelector(".sign-row").style.display = (row.a_signed && row.b_signed) ? "none" : "flex";
+
+    showOnly("contract");
+
+    if (contractRealtimeChannel) { sb.removeChannel(contractRealtimeChannel); }
+    contractRealtimeChannel = sb
+      .channel("contract-row-" + row.id)
+      .on("postgres_changes", {
+        event: "UPDATE", schema: "public", table: "contract_requests",
+        filter: "id=eq." + row.id
+      }, function (payload) {
+        currentContract = payload.new;
+        applyContractData(currentContract.contract_data || {});
+        document.getElementById("signDotA").classList.toggle("done", !!currentContract.a_signed);
+        document.getElementById("signDotB").classList.toggle("done", !!currentContract.b_signed);
+        var bothSigned = currentContract.a_signed && currentContract.b_signed;
+        document.getElementById("celebrateBox").classList.toggle("show", !!bothSigned);
+        document.getElementById("contractForm").style.display = bothSigned ? "none" : "block";
+        document.querySelector(".sign-row").style.display = bothSigned ? "none" : "flex";
+      })
+      .subscribe();
+  }
+
+  function applyContractData(data) {
+    contractFieldIds.forEach(function (id) {
+      var el = document.getElementById(id);
+      if (el && document.activeElement !== el && data[id] != null) el.value = data[id];
+    });
+    var splitRadio = contractForm.querySelector('input[name="c_splitRule"][value="' + (data.c_splitRule || "") + '"]');
+    if (splitRadio) splitRadio.checked = true;
+  }
+
+  function collectContractData() {
+    var out = {};
+    contractFieldIds.forEach(function (id) {
+      var el = document.getElementById(id);
+      if (el) out[id] = el.value;
+    });
+    var checkedSplit = contractForm.querySelector('input[name="c_splitRule"]:checked');
+    out.c_splitRule = checkedSplit ? checkedSplit.value : "";
+    return out;
+  }
+
+  async function saveContractField() {
+    if (!currentContract) return;
+    var merged = Object.assign({}, currentContract.contract_data || {}, collectContractData());
+    var { data } = await sb
+      .from("contract_requests")
+      .update({ contract_data: merged, updated_at: new Date().toISOString() })
+      .eq("id", currentContract.id)
+      .select()
+      .maybeSingle();
+    if (data) currentContract = data;
+  }
+
+  contractForm.querySelectorAll("input").forEach(function (el) {
+    el.addEventListener("change", saveContractField);
+    el.addEventListener("blur", saveContractField);
+  });
+
+  document.getElementById("signBtn").addEventListener("click", async function () {
+    if (!currentContract) return;
+    var iAmA = currentUser.id === currentContract.user_a;
+    var field = iAmA ? "a_signed" : "b_signed";
+    var update = {}; update[field] = true; update.updated_at = new Date().toISOString();
+    await saveContractField();
+    var { data } = await sb
+      .from("contract_requests")
+      .update(update)
+      .eq("id", currentContract.id)
+      .select()
+      .maybeSingle();
+    if (data) {
+      currentContract = data;
+      var bothSigned = data.a_signed && data.b_signed;
+      document.getElementById("signDotA").classList.toggle("done", !!data.a_signed);
+      document.getElementById("signDotB").classList.toggle("done", !!data.b_signed);
+      document.getElementById("celebrateBox").classList.toggle("show", !!bothSigned);
+      if (bothSigned) {
+        document.getElementById("contractForm").style.display = "none";
+        document.querySelector(".sign-row").style.display = "none";
+      } else if (contractCounterpartIsDemo) {
+        var otherField = iAmA ? "b_signed" : "a_signed";
+        var contractId = data.id;
+        setTimeout(async function () {
+          var otherUpdate = {}; otherUpdate[otherField] = true; otherUpdate.updated_at = new Date().toISOString();
+          await sb.from("contract_requests").update(otherUpdate).eq("id", contractId);
+          // realtime 구독이 결과를 받아 축하 화면을 그대로 띄웁니다.
+        }, 1500);
+      }
+    }
+  });
+
+  document.getElementById("backToMatchBtn").addEventListener("click", function () {
+    if (contractRealtimeChannel) { sb.removeChannel(contractRealtimeChannel); contractRealtimeChannel = null; }
+    showOnly("match");
+    loadCandidates();
+    checkResumableContract();
+  });
+
+  /* ---- PDF / IMAGE EXPORT ---- */
+  async function buildPrintable() {
+    var d = collectContractData();
+    var nameA = await nameForId(currentContract.user_a);
+    var nameB = await nameForId(currentContract.user_b);
+    document.getElementById("p_partyA").textContent = nameA;
+    document.getElementById("p_partyB").textContent = nameB;
+    document.getElementById("printDate").textContent = new Date().toLocaleDateString("ko-KR");
+    document.getElementById("p_depositDate").textContent = d.c_depositDate || "-";
+    document.getElementById("p_depositAccount").textContent = d.c_depositAccount || "-";
+    document.getElementById("p_rentDay").textContent = d.c_rentDay ? "매월 " + d.c_rentDay + "일" : "-";
+    document.getElementById("p_rentAccount").textContent = d.c_rentAccount || "-";
+    document.getElementById("p_splitRule").textContent = d.c_splitRule || "-";
+    document.getElementById("p_settleCycle").textContent = d.c_settleCycle || "-";
+    document.getElementById("p_settleMethod").textContent = d.c_settleMethod || "-";
+    document.getElementById("p_penalty").textContent = d.c_penalty ? d.c_penalty + "만 원" : "-";
+    document.getElementById("p_noticeWeeks").textContent = d.c_noticeWeeks ? d.c_noticeWeeks + "주" : "-";
+    document.getElementById("p_signA").textContent = (currentContract && currentContract.a_signed) ? "서명 완료 ✓" : "미서명";
+    document.getElementById("p_signB").textContent = (currentContract && currentContract.b_signed) ? "서명 완료 ✓" : "미서명";
+  }
+
+  document.getElementById("downloadImgBtn").addEventListener("click", async function () {
+    if (!currentContract || !window.html2canvas) return;
+    await buildPrintable();
+    var el = document.getElementById("printableContract");
+    el.style.left = "0px"; el.style.position = "static";
+    var canvas = await window.html2canvas(el, { scale: 2 });
+    el.style.position = "fixed"; el.style.left = "-9999px";
+    var link = document.createElement("a");
+    link.download = "room_mate_contract.png";
+    link.href = canvas.toDataURL("image/png");
+    link.click();
+  });
+
+  document.getElementById("downloadPdfBtn").addEventListener("click", async function () {
+    if (!currentContract || !window.html2canvas || !window.jspdf) return;
+    await buildPrintable();
+    var el = document.getElementById("printableContract");
+    el.style.left = "0px"; el.style.position = "static";
+    var canvas = await window.html2canvas(el, { scale: 2 });
+    el.style.position = "fixed"; el.style.left = "-9999px";
+    var imgData = canvas.toDataURL("image/png");
+    var pdf = new window.jspdf.jsPDF({ unit: "pt", format: "a4" });
+    var pageWidth = pdf.internal.pageSize.getWidth();
+    var imgWidth = pageWidth - 40;
+    var imgHeight = (canvas.height * imgWidth) / canvas.width;
+    pdf.addImage(imgData, "PNG", 20, 20, imgWidth, imgHeight);
+    pdf.save("room_mate_contract.pdf");
+  });
+
+})();
+</script>
+</body>
+</html>
