@@ -8,9 +8,15 @@
 -- 3) 아래 두 군데의 <DEMO_USER_UID> 를 복사한 UID로 바꾼 뒤,
 --    SQL Editor에서 이 파일 전체를 실행하세요.
 
-insert into public.profiles (id, email, name, is_demo)
-values ('68a3110e-9ecc-4bd0-b694-db2c07d20206', 'hellov@g.skku.edu', '김성균', true)
-on conflict (id) do update set name = excluded.name, is_demo = true;
+insert into public.profiles (id, email, name, gender, age, college, is_smoker, is_demo)
+values ('68a3110e-9ecc-4bd0-b694-db2c07d20206', 'hellov@g.skku.edu', '김성균', 'male', 22, '소프트웨어융합대학', false, true)
+on conflict (id) do update set
+  name = excluded.name,
+  gender = excluded.gender,
+  age = excluded.age,
+  college = excluded.college,
+  is_smoker = excluded.is_smoker,
+  is_demo = true;
 
 insert into public.lifestyle_profiles (
   id, bedtime, wake_time, alarm, cleaning, dishes, call_place, earphone, guests, drinking,

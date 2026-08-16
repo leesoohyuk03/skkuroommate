@@ -8,9 +8,21 @@ create table if not exists public.profiles (
   id uuid primary key references auth.users(id) on delete cascade,
   email text not null unique,
   name text,
+  gender text check (gender in ('male', 'female')),
+  age int check (age between 17 and 99),
+  college text,
+  is_smoker boolean,
+  terms_agreed_at timestamptz, -- 최초 로그인 시 이용약관/기본 준수사항 동의 시각 (null = 미동의)
   is_demo boolean not null default false, -- 테스트용 가상 후보(예: 김성균) 표시
   created_at timestamptz not null default now()
 );
+
+-- 이미 schema.sql을 실행한 적이 있는 기존 설치에도 새 컬럼이 추가되도록 보강
+alter table public.profiles add column if not exists gender text check (gender in ('male', 'female'));
+alter table public.profiles add column if not exists age int check (age between 17 and 99);
+alter table public.profiles add column if not exists college text;
+alter table public.profiles add column if not exists is_smoker boolean;
+alter table public.profiles add column if not exists terms_agreed_at timestamptz;
 
 alter table public.profiles enable row level security;
 
@@ -73,7 +85,57 @@ create policy "lifestyle_update_own"
   using (auth.uid() = id);
 
 -- ============================================================
--- 3. messages : 1:1 실시간 채팅
+-- 3. user_blocks / user_reports : 신고 · 차단
+-- ============================================================
+create table if not exists public.user_blocks (
+  blocker_id uuid not null references public.profiles(id) on delete cascade,
+  blocked_id uuid not null references public.profiles(id) on delete cascade,
+  created_at timestamptz not null default now(),
+  primary key (blocker_id, blocked_id)
+);
+
+alter table public.user_blocks enable row level security;
+
+-- 차단 여부는 메시지 발송 제한(양방향)에도 쓰이므로, 차단한 쪽/차단당한 쪽
+-- 모두 그 관계의 존재 자체는 조회할 수 있게 허용합니다. (누가 신고했는지 사유는 별도 테이블)
+create policy "blocks_select_related"
+  on public.user_blocks for select
+  to authenticated
+  using (auth.uid() = blocker_id or auth.uid() = blocked_id);
+
+create policy "blocks_insert_own"
+  on public.user_blocks for insert
+  to authenticated
+  with check (auth.uid() = blocker_id);
+
+create policy "blocks_delete_own"
+  on public.user_blocks for delete
+  to authenticated
+  using (auth.uid() = blocker_id);
+
+create table if not exists public.user_reports (
+  id bigint generated always as identity primary key,
+  reporter_id uuid not null references public.profiles(id) on delete cascade,
+  reported_id uuid not null references public.profiles(id) on delete cascade,
+  reason text not null,
+  detail text,
+  created_at timestamptz not null default now()
+);
+
+alter table public.user_reports enable row level security;
+
+create policy "reports_insert_own"
+  on public.user_reports for insert
+  to authenticated
+  with check (auth.uid() = reporter_id);
+
+create policy "reports_select_own"
+  on public.user_reports for select
+  to authenticated
+  using (auth.uid() = reporter_id);
+
+-- ============================================================
+-- 4. messages : 1:1 실시간 채팅
 -- ============================================================
 create table if not exists public.messages (
   id bigint generated always as identity primary key,
@@ -96,7 +158,14 @@ create policy "messages_select_participant"
 create policy "messages_insert_as_sender"
   on public.messages for insert
   to authenticated
-  with check (auth.uid() = sender_id);
+  with check (
+    auth.uid() = sender_id
+    and not exists (
+      select 1 from public.user_blocks b
+      where (b.blocker_id = sender_id and b.blocked_id = receiver_id)
+         or (b.blocker_id = receiver_id and b.blocked_id = sender_id)
+    )
+  );
 
 -- 테스트용: is_demo=true 계정(예: 김성균)이 보낸 것처럼 보이는 자동 응답 메시지를
 -- 실사용자 세션에서 대신 기록할 수 있도록 허용합니다. 실제 사용자끼리는 영향 없음.
@@ -108,7 +177,7 @@ create policy "messages_insert_as_demo_sender"
   );
 
 -- ============================================================
--- 4. contract_requests : 계약 상호 확인 상태 + 협약서 내용
+-- 5. contract_requests : 계약 상호 확인 상태 + 협약서 내용
 -- ============================================================
 create table if not exists public.contract_requests (
   id bigint generated always as identity primary key,
@@ -140,6 +209,11 @@ create policy "contract_update_participant"
   to authenticated
   using (auth.uid() = user_a or auth.uid() = user_b);
 
+create policy "contract_delete_participant"
+  on public.contract_requests for delete
+  to authenticated
+  using (auth.uid() = user_a or auth.uid() = user_b);
+
 -- 테스트용: 상대가 is_demo=true 계정(예: 김성균)인 계약 건은, 실사용자가
 -- 상대방 쪽 확인/서명 플래그까지 대신 갱신(자동 응답 시뮬레이션)할 수 있도록 허용합니다.
 create policy "contract_update_demo_counterpart"
@@ -150,7 +224,7 @@ create policy "contract_update_demo_counterpart"
   );
 
 -- ============================================================
--- 5. Realtime 구독 활성화 (채팅 / 계약 상태 실시간 반영)
+-- 6. Realtime 구독 활성화 (채팅 / 계약 상태 실시간 반영)
 -- ============================================================
 alter publication supabase_realtime add table public.messages;
 alter publication supabase_realtime add table public.contract_requests;

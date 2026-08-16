@@ -301,6 +301,10 @@
     border: 1px solid transparent;
     font-weight: 600;
   }
+  .badge-warn { background: var(--warn-soft); color: var(--warn); }
+  .badge-domain { cursor: pointer; }
+  .badge-domain:hover { background: var(--accent); color: var(--accent-ink); }
+  .badge-domain:active { transform: scale(0.97); }
 
   .field { display: flex; flex-direction: column; gap: 8px; }
   .field label {
@@ -389,15 +393,16 @@
 
   .otp-inputs {
     display: flex;
-    gap: 8px;
+    gap: 6px;
     justify-content: space-between;
   }
   .otp-inputs input {
     width: 100%;
+    min-width: 0;
     aspect-ratio: 1 / 1;
     text-align: center;
     font-family: var(--font-mono);
-    font-size: 1.2rem;
+    font-size: 1.05rem;
     font-weight: 700;
     border-radius: var(--radius-sm);
     border: 1.5px solid var(--line);
@@ -491,7 +496,7 @@
     font-size: 0.8rem;
     color: var(--panel-ink-soft);
     line-height: 1.55;
-    margin-top: -14px;
+    margin-top: 6px;
   }
 
   .steps { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 2px; }
@@ -539,6 +544,8 @@
   }
   .rail-link:hover { border-color: var(--panel-accent); color: var(--panel-ink); }
   .rail-logout { margin-top: auto; }
+  .rail-cancel { color: #E2836A; border-color: rgba(226,131,106,0.35); }
+  .rail-cancel:hover { border-color: #E2836A; color: #E2836A; }
 
   /* ---------- PAGE 2 : SURVEY ---------- */
   .survey-main {
@@ -782,12 +789,33 @@
   }
   .candidate-main { flex: 1; min-width: 0; }
   .candidate-name { font-weight: 700; font-size: 0.95rem; }
+  .candidate-meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.78rem;
+    color: var(--ink-faint);
+    margin-top: 3px;
+  }
   .candidate-code {
     font-family: var(--font-mono);
     font-size: 0.78rem;
     color: var(--ink-soft);
     margin-top: 2px;
   }
+
+  .gender-filter-toggle {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.82rem;
+    color: var(--ink-soft);
+    margin-bottom: 12px;
+    cursor: pointer;
+    user-select: none;
+  }
+  .gender-filter-toggle input { accent-color: var(--accent); width: 15px; height: 15px; }
   .similarity-pill {
     font-family: var(--font-mono);
     font-size: 0.78rem;
@@ -875,6 +903,17 @@
     border-radius: 6px;
   }
   .chat-close:hover { color: var(--panel-ink); background: rgba(255,255,255,0.08); }
+  .chat-icon-btn {
+    background: transparent;
+    border: none;
+    color: var(--panel-ink-soft);
+    font-size: 0.95rem;
+    line-height: 1;
+    cursor: pointer;
+    padding: 4px 6px;
+    border-radius: 6px;
+  }
+  .chat-icon-btn:hover { color: var(--panel-ink); background: rgba(255,255,255,0.08); }
 
   .contract-btn {
     font-family: var(--font-sans);
@@ -968,6 +1007,56 @@
     display: grid; place-items: center;
   }
   .chat-send:hover { opacity: 0.9; }
+
+  /* ---------- REPORT MODAL ---------- */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(10, 14, 24, 0.55);
+    z-index: 200;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+  .modal-overlay.show { display: flex; }
+  .modal-card {
+    width: min(380px, 100%);
+    background: var(--surface);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow);
+    padding: 22px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .modal-card h3 { font-size: 1.05rem; font-weight: 800; }
+  .modal-sub { font-size: 0.83rem; color: var(--ink-soft); margin-top: -8px; }
+  .modal-actions { display: flex; justify-content: flex-end; gap: 8px; }
+  .text-field textarea {
+    width: 100%;
+    padding: 10px 12px;
+    border-radius: var(--radius-sm);
+    border: 1.5px solid var(--line);
+    background: var(--surface);
+    color: var(--ink);
+    font-size: 0.88rem;
+    font-family: var(--font-sans);
+    resize: vertical;
+  }
+  .text-field textarea:focus { border-color: var(--accent); }
+
+  .agree-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: 0.83rem;
+    color: var(--ink-soft);
+    line-height: 1.5;
+    cursor: pointer;
+  }
+  .agree-row input { margin-top: 3px; accent-color: var(--accent); width: 15px; height: 15px; flex: none; }
+  .agree-row strong { color: var(--ink); }
 
   /* ---------- PAGE 4 : CONTRACT ---------- */
   .contract-parties {
@@ -1115,8 +1204,8 @@
         </div>
 
         <div class="badge-row" id="badgeRow">
-          <span class="badge">@g.skku.edu</span>
-          <span class="badge">@skku.edu</span>
+          <button type="button" class="badge badge-domain" data-domain="@g.skku.edu">@g.skku.edu</button>
+          <button type="button" class="badge badge-domain" data-domain="@skku.edu">@skku.edu</button>
         </div>
 
         <!-- Step 1: email -->
@@ -1136,12 +1225,14 @@
         <!-- Step 2: OTP -->
         <div class="otp-block" id="otpBlock">
           <div class="info-notice" id="otpNotice">
-            입력하신 학교 이메일로 6자리 인증번호를 보냈어요. 받은편지함(스팸함 포함)을 확인해주세요.
+            입력하신 학교 이메일로 8자리 인증번호를 보냈어요. 받은편지함(스팸함 포함)을 확인해주세요.
           </div>
 
           <div class="field">
-            <label>인증번호 6자리 입력</label>
+            <label>인증번호 8자리 입력</label>
             <div class="otp-inputs" id="otpInputs">
+              <input inputmode="numeric" maxlength="1" />
+              <input inputmode="numeric" maxlength="1" />
               <input inputmode="numeric" maxlength="1" />
               <input inputmode="numeric" maxlength="1" />
               <input inputmode="numeric" maxlength="1" />
@@ -1167,16 +1258,44 @@
           <button class="btn btn-primary btn-block" id="verifyBtn">인증하기</button>
         </div>
 
-        <!-- Step 3: name (first login only) -->
+        <!-- Step 3: name + basic profile (first login only) -->
         <div class="name-block" id="nameBlock">
-          <div class="info-notice">첫 인증이시네요! 다른 사용자에게 표시될 이름을 입력해주세요.</div>
+          <div class="info-notice">첫 인증이시네요! 다른 사용자에게 표시될 기본 프로필을 입력해주세요.</div>
           <div class="field">
             <label for="nameInput">이름 (닉네임 가능)</label>
             <div class="input-row">
               <input type="text" id="nameInput" placeholder="예: 정재준" autocomplete="name" maxlength="20" />
             </div>
           </div>
-          <button class="btn btn-primary btn-block" id="saveNameBtn">이름 저장하고 계속하기</button>
+
+          <div class="field">
+            <label>성별 (기본적으로 동성끼리만 매칭돼요)</label>
+            <div class="pill-group" data-name="gender" id="genderGroup">
+              <label><input type="radio" name="gender" value="male" /><span class="pill">남성</span></label>
+              <label><input type="radio" name="gender" value="female" /><span class="pill">여성</span></label>
+            </div>
+          </div>
+
+          <div class="field-grid">
+            <div class="text-field">
+              <label for="ageInput">나이</label>
+              <input type="number" id="ageInput" min="17" max="99" placeholder="22" />
+            </div>
+            <div class="text-field">
+              <label for="collegeInput">소속 단과대</label>
+              <input type="text" id="collegeInput" placeholder="예: 소프트웨어융합대학" maxlength="30" />
+            </div>
+          </div>
+
+          <div class="field">
+            <label>흡연 여부</label>
+            <div class="pill-group" data-name="smoker" id="smokerGroup">
+              <label><input type="radio" name="smoker" value="false" /><span class="pill">비흡연</span></label>
+              <label><input type="radio" name="smoker" value="true" /><span class="pill">흡연</span></label>
+            </div>
+          </div>
+
+          <button class="btn btn-primary btn-block" id="saveNameBtn">프로필 저장하고 계속하기</button>
         </div>
 
         <div class="trust-foot">
@@ -1436,6 +1555,10 @@
         <h2>매칭 후보</h2>
         <span id="candidateCount">0명</span>
       </div>
+      <label class="gender-filter-toggle">
+        <input type="checkbox" id="showAllGendersToggle" />
+        <span>다른 성별 후보도 보기</span>
+      </label>
       <div class="candidate-list" id="candidateList">
         <div class="empty-note">아직 다른 학생의 응답이 없어요. 친구에게 링크를 공유해보세요.</div>
       </div>
@@ -1460,7 +1583,8 @@
         <div class="rail-title">표준 생활·정산 협약서</div>
         <p class="rail-sub">두 사람이 같은 화면을 동시에 채워요. 저장은 자동으로 반영됩니다.</p>
       </div>
-      <button class="rail-link rail-logout" id="backToMatchBtn">매칭 목록으로 돌아가기</button>
+      <button class="rail-link rail-cancel rail-logout" id="cancelContractBtn">계약 취소하기</button>
+      <button class="rail-link" id="backToMatchBtn">매칭 목록으로 돌아가기</button>
     </aside>
 
     <main class="survey-main" style="max-width:760px;">
@@ -1567,12 +1691,38 @@
 
 </div>
 
+<!-- ================= TERMS AGREEMENT MODAL ================= -->
+<div class="modal-overlay" id="agreementOverlay">
+  <div class="modal-card" style="max-height:85vh; overflow-y:auto;">
+    <h3>시작하기 전에 꼭 확인해주세요</h3>
+    <p class="modal-sub">안전한 룸메이트 매칭을 위한 최소한의 약속이에요. 아래 항목에 모두 동의해야 계속할 수 있어요.</p>
+
+    <label class="agree-row">
+      <input type="checkbox" id="agree1" />
+      <span><strong>[필수]</strong> 성균 룸메 이용약관 및 개인정보 처리방침에 동의합니다.</span>
+    </label>
+    <label class="agree-row">
+      <input type="checkbox" id="agree2" />
+      <span><strong>[필수]</strong> 프로필과 라이프스타일 답변을 사실대로 작성하며, 허위 정보로 인해 발생하는 문제는 본인이 책임집니다.</span>
+    </label>
+    <label class="agree-row">
+      <input type="checkbox" id="agree3" />
+      <span><strong>[필수]</strong> 실내 흡연 금지, 사전 협의 없는 외부인 숙박 금지, 청소 규칙 준수 등 룸메이트 기본 준수사항을 지키겠습니다.</span>
+    </label>
+    <div class="modal-actions" style="justify-content:stretch;">
+      <button class="btn btn-primary btn-block" id="agreeSubmitBtn" type="button" disabled>동의하고 시작하기</button>
+    </div>
+  </div>
+</div>
+
 <!-- ================= CHAT POPUP ================= -->
 <div class="chat-popup" id="chatPopup">
   <div class="chat-header">
     <button class="contract-btn" id="contractBtn">계약</button>
     <span class="chat-header-name" id="chatPartnerName">채팅 상대</span>
     <div class="chat-header-right">
+      <button class="chat-icon-btn" id="chatReportBtn" type="button" title="신고하기" aria-label="신고하기">🚩</button>
+      <button class="chat-icon-btn" id="chatBlockBtn" type="button" title="차단하기" aria-label="차단하기">🚫</button>
       <button class="chat-close" id="chatCloseBtn" aria-label="채팅 닫기">✕</button>
     </div>
   </div>
@@ -1582,6 +1732,36 @@
   <div class="chat-input-row">
     <input type="text" id="chatInput" placeholder="메시지를 입력하세요" maxlength="500" />
     <button class="chat-send" id="chatSendBtn" aria-label="전송">➤</button>
+  </div>
+</div>
+
+<!-- ================= REPORT MODAL ================= -->
+<div class="modal-overlay" id="reportOverlay">
+  <div class="modal-card">
+    <h3>신고하기</h3>
+    <p class="modal-sub" id="reportTargetLabel">-</p>
+    <div class="field">
+      <label for="reportReason">신고 사유</label>
+      <div class="text-field">
+        <select id="reportReason">
+          <option value="허위 프로필">허위 프로필 (생활 패턴/신원 정보 거짓)</option>
+          <option value="비매너/무례한 언행">비매너/무례한 언행</option>
+          <option value="사기 의심">사기 의심</option>
+          <option value="스팸/광고">스팸/광고</option>
+          <option value="기타">기타</option>
+        </select>
+      </div>
+    </div>
+    <div class="field">
+      <label for="reportDetail">상세 내용 (선택)</label>
+      <div class="text-field">
+        <textarea id="reportDetail" rows="3" maxlength="500" placeholder="상황을 구체적으로 알려주시면 검토에 도움이 돼요."></textarea>
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" id="reportCancelBtn" type="button">취소</button>
+      <button class="btn btn-primary" id="reportSubmitBtn" type="button">신고 접수하기</button>
+    </div>
   </div>
 </div>
 
@@ -1624,8 +1804,8 @@
      아래 두 값을 Supabase 프로젝트 정보로 바꿔주세요.
      Project Settings > API 에서 확인할 수 있습니다.
   ========================================================= */
-  var SUPABASE_URL = "https://ethwkqgwhkimfupgbpaa.supabase.co";
-  var SUPABASE_ANON_KEY = "sb_publishable_hbh7Lbopx-AI4sB5G47MOw_ZGaexAk6";
+  var SUPABASE_URL = "https://uydpiqkiuiohgawzbiya.supabase.co";
+  var SUPABASE_ANON_KEY = "sb_publishable_qBjnBD_j5q_7Mp1Hn0K-Tg_Fmq6-upW";
 
   var CONFIGURED =
     SUPABASE_URL.indexOf("YOUR-SUPABASE") === -1 &&
@@ -1783,8 +1963,8 @@
     hideMsg(otpError); hideMsg(otpOk);
 
     var entered = otpInputs.map(function (inp) { return inp.value; }).join("");
-    if (entered.length < 6) {
-      otpErrorText.textContent = "6자리 인증번호를 모두 입력해주세요.";
+    if (entered.length < 8) {
+      otpErrorText.textContent = "8자리 인증번호를 모두 입력해주세요.";
       showMsg(otpError);
       return;
     }
@@ -1811,29 +1991,96 @@
     showMsg(otpOk);
     document.getElementById("otpOkText").textContent = "인증이 완료되었습니다…";
 
-    currentUser = { id: data.user.id, email: pendingEmail, name: null };
+    currentUser = { id: data.user.id, email: pendingEmail, name: null, gender: null };
 
     var { data: profileRow } = await sb
       .from("profiles")
-      .select("id,name")
+      .select("id,name,gender,age,college,is_smoker,terms_agreed_at")
       .eq("id", currentUser.id)
       .maybeSingle();
 
-    if (profileRow && profileRow.name) {
+    if (!profileRow || !profileRow.terms_agreed_at) {
+      setTimeout(function () { openAgreementModal(profileRow); }, 400);
+      return;
+    }
+
+    proceedAfterAgreement(profileRow);
+  }
+
+  function proceedAfterAgreement(profileRow) {
+    if (profileRow && profileRow.name && profileRow.gender) {
       currentUser.name = profileRow.name;
-      setTimeout(enterSurveyFlow, 500);
+      currentUser.gender = profileRow.gender;
+      setTimeout(enterSurveyFlow, 200);
     } else {
-      setTimeout(function () {
-        otpBlock.classList.remove("show");
-        nameBlock.classList.add("show");
-        nameInput.focus();
-      }, 400);
+      if (profileRow && profileRow.name) nameInput.value = profileRow.name;
+      otpBlock.classList.remove("show");
+      nameBlock.classList.add("show");
+      nameInput.focus();
     }
   }
 
+  /* =========================================================
+     2b. TERMS AGREEMENT MODAL (first login only)
+  ========================================================= */
+  var agreementOverlay = document.getElementById("agreementOverlay");
+  var agreeSubmitBtn = document.getElementById("agreeSubmitBtn");
+  var REQUIRED_AGREE_IDS = ["agree1", "agree2", "agree3"];
+  var pendingProfileRowForAgreement = null;
+
+  function updateAgreeSubmitState() {
+    agreeSubmitBtn.disabled = !REQUIRED_AGREE_IDS.every(function (id) {
+      return document.getElementById(id).checked;
+    });
+  }
+  REQUIRED_AGREE_IDS.forEach(function (id) {
+    document.getElementById(id).addEventListener("change", updateAgreeSubmitState);
+  });
+
+  function openAgreementModal(profileRow) {
+    pendingProfileRowForAgreement = profileRow;
+    otpBlock.classList.remove("show");
+    REQUIRED_AGREE_IDS.forEach(function (id) { document.getElementById(id).checked = false; });
+    updateAgreeSubmitState();
+    agreementOverlay.classList.add("show");
+  }
+
+  async function submitAgreement() {
+    if (agreeSubmitBtn.disabled || !requireConfig(null, null)) return;
+
+    agreeSubmitBtn.disabled = true;
+    agreeSubmitBtn.textContent = "저장 중…";
+
+    var { error } = await sb.from("profiles").upsert({
+      id: currentUser.id,
+      email: currentUser.email,
+      terms_agreed_at: new Date().toISOString()
+    });
+
+    agreeSubmitBtn.textContent = "동의하고 시작하기";
+
+    if (error) {
+      agreeSubmitBtn.disabled = false;
+      alert("동의 처리에 실패했어요: " + error.message);
+      return;
+    }
+
+    agreementOverlay.classList.remove("show");
+    proceedAfterAgreement(pendingProfileRowForAgreement);
+  }
+
+  agreeSubmitBtn.addEventListener("click", submitAgreement);
+
   async function saveName() {
     var name = (nameInput.value || "").trim();
+    var genderInput = document.querySelector('#genderGroup input[name="gender"]:checked');
+    var smokerInput = document.querySelector('#smokerGroup input[name="smoker"]:checked');
+    var ageInput = document.getElementById("ageInput");
+    var collegeInput = document.getElementById("collegeInput");
+
     if (!name) { nameInput.focus(); return; }
+    if (!genderInput) { alert("성별을 선택해주세요."); return; }
+    if (!smokerInput) { alert("흡연 여부를 선택해주세요."); return; }
     if (!requireConfig(null, null)) return;
 
     saveNameBtn.disabled = true;
@@ -1842,15 +2089,20 @@
     var { error } = await sb.from("profiles").upsert({
       id: currentUser.id,
       email: currentUser.email,
-      name: name
+      name: name,
+      gender: genderInput.value,
+      age: ageInput.value ? parseInt(ageInput.value, 10) : null,
+      college: (collegeInput.value || "").trim() || null,
+      is_smoker: smokerInput.value === "true"
     });
 
     saveNameBtn.disabled = false;
-    saveNameBtn.textContent = "이름 저장하고 계속하기";
+    saveNameBtn.textContent = "프로필 저장하고 계속하기";
 
-    if (error) { alert("이름 저장에 실패했어요: " + error.message); return; }
+    if (error) { alert("프로필 저장에 실패했어요: " + error.message); return; }
 
     currentUser.name = name;
+    currentUser.gender = genderInput.value;
     enterSurveyFlow();
   }
 
@@ -1880,6 +2132,15 @@
   nameInput.addEventListener("keydown", function (e) { if (e.key === "Enter") saveName(); });
   emailInput.addEventListener("keydown", function (e) { if (e.key === "Enter") { e.preventDefault(); sendCode(); } });
 
+  Array.prototype.forEach.call(document.querySelectorAll(".badge-domain"), function (btn) {
+    btn.addEventListener("click", function () {
+      var domain = btn.dataset.domain;
+      var local = (emailInput.value || "").split("@")[0];
+      emailInput.value = local + domain;
+      emailInput.focus();
+    });
+  });
+
   async function resetToLanding() {
     clearInterval(otpTimerHandle);
     if (sb) { try { await sb.auth.signOut(); } catch (e) {} }
@@ -1889,6 +2150,11 @@
     pendingEmail = "";
     emailInput.value = "";
     nameInput.value = "";
+    document.getElementById("ageInput").value = "";
+    document.getElementById("collegeInput").value = "";
+    Array.prototype.forEach.call(document.querySelectorAll('#genderGroup input, #smokerGroup input'), function (inp) { inp.checked = false; });
+    agreementOverlay.classList.remove("show");
+    REQUIRED_AGREE_IDS.forEach(function (id) { document.getElementById(id).checked = false; });
     sendCodeBtn.textContent = "인증번호 받기";
     verifyBtn.disabled = false;
     otpBlock.classList.remove("show");
@@ -2172,13 +2438,18 @@
     await checkResumableContract();
   }
 
+  var showAllGendersToggle = document.getElementById("showAllGendersToggle");
+  showAllGendersToggle.addEventListener("change", loadCandidates);
+
+  function genderLabel(g) { return g === "male" ? "남" : g === "female" ? "여" : ""; }
+
   async function loadCandidates() {
     var listEl = document.getElementById("candidateList");
     if (!requireConfig(null, null)) return;
 
     var { data, error } = await sb
       .from("lifestyle_profiles")
-      .select("id,diligence_pct,clean_pct,sensitivity_pct,tight_pct,type_code,profiles(name,is_demo)")
+      .select("id,diligence_pct,clean_pct,sensitivity_pct,tight_pct,type_code,profiles(name,is_demo,gender,age,college,is_smoker)")
       .neq("id", currentUser.id);
 
     if (error) {
@@ -2186,22 +2457,45 @@
       return;
     }
 
-    var candidates = (data || []).map(function (row) {
-      var pct = {
-        diligencePct: row.diligence_pct, cleanPct: row.clean_pct,
-        sensitivityPct: row.sensitivity_pct, tightPct: row.tight_pct
-      };
-      var dist = distancePct(myPct, pct);
-      var similarity = clampPct((1 - dist / 2) * 100);
-      return {
-        id: row.id,
-        name: (row.profiles && row.profiles.name) || "이름 미설정",
-        isDemo: !!(row.profiles && row.profiles.is_demo),
-        typeCode: row.type_code || typeCodeOf(pct),
-        similarity: similarity,
-        dist: dist
-      };
+    var blockedIds = {};
+    var { data: blockRows } = await sb
+      .from("user_blocks")
+      .select("blocker_id,blocked_id")
+      .or("blocker_id.eq." + currentUser.id + ",blocked_id.eq." + currentUser.id);
+    (blockRows || []).forEach(function (b) {
+      blockedIds[b.blocker_id === currentUser.id ? b.blocked_id : b.blocker_id] = true;
     });
+
+    var showAllGenders = showAllGendersToggle.checked;
+
+    var candidates = (data || [])
+      .filter(function (row) { return !blockedIds[row.id]; })
+      .map(function (row) {
+        var p = row.profiles || {};
+        var pct = {
+          diligencePct: row.diligence_pct, cleanPct: row.clean_pct,
+          sensitivityPct: row.sensitivity_pct, tightPct: row.tight_pct
+        };
+        var dist = distancePct(myPct, pct);
+        var similarity = clampPct((1 - dist / 2) * 100);
+        return {
+          id: row.id,
+          name: p.name || "이름 미설정",
+          isDemo: !!p.is_demo,
+          gender: p.gender || null,
+          age: p.age || null,
+          college: p.college || null,
+          isSmoker: p.is_smoker,
+          typeCode: row.type_code || typeCodeOf(pct),
+          similarity: similarity,
+          dist: dist
+        };
+      })
+      .filter(function (c) {
+        if (c.isDemo || showAllGenders) return true;
+        if (!currentUser.gender || !c.gender) return true;
+        return c.gender === currentUser.gender;
+      });
 
     candidates.sort(function (a, b) { return a.dist - b.dist; });
 
@@ -2214,6 +2508,14 @@
 
     listEl.innerHTML = "";
     candidates.forEach(function (c) {
+      var metaParts = [];
+      if (c.gender) metaParts.push(genderLabel(c.gender));
+      if (c.age) metaParts.push(c.age + "세");
+      if (c.college) metaParts.push(c.college);
+      var metaHtml = metaParts.length ? '<span>' + metaParts.join(" · ") + "</span>" : "";
+      var smokerHtml = c.isSmoker === true ? '<span class="badge badge-warn">흡연</span>' :
+        (c.isSmoker === false ? '<span class="badge">비흡연</span>' : "");
+
       var item = document.createElement("button");
       item.type = "button";
       item.className = "candidate-item";
@@ -2221,6 +2523,7 @@
         '<span class="avatar">' + c.name.charAt(0) + "</span>" +
         '<span class="candidate-main">' +
         '<span class="candidate-name">' + c.name + (c.isDemo ? ' <span class="badge" style="vertical-align:1px;">예시</span>' : "") + "</span>" +
+        (metaHtml || smokerHtml ? '<span class="candidate-meta">' + metaHtml + smokerHtml + "</span>" : "") +
         '<span class="candidate-code">' + c.typeCode + "</span>" +
         "</span>" +
         '<span class="similarity-pill">' + c.similarity + "% 유사</span>";
@@ -2413,6 +2716,72 @@
     if (e.key === "Escape" && chatState.open) closeChat();
   });
 
+  /* =========================================================
+     5b. REPORT / BLOCK
+  ========================================================= */
+  var reportOverlay = document.getElementById("reportOverlay");
+  var reportTargetLabel = document.getElementById("reportTargetLabel");
+  var reportReasonSelect = document.getElementById("reportReason");
+  var reportDetailInput = document.getElementById("reportDetail");
+
+  function openReportModal() {
+    if (!chatState.open) return;
+    reportTargetLabel.textContent = chatState.partnerName + " 님을 신고합니다.";
+    reportReasonSelect.value = "허위 프로필";
+    reportDetailInput.value = "";
+    reportOverlay.classList.add("show");
+  }
+
+  function closeReportModal() {
+    reportOverlay.classList.remove("show");
+  }
+
+  async function submitReport() {
+    if (!chatState.open) { closeReportModal(); return; }
+    var submitBtn = document.getElementById("reportSubmitBtn");
+    submitBtn.disabled = true;
+    submitBtn.textContent = "접수 중…";
+
+    var { error } = await sb.from("user_reports").insert({
+      reporter_id: currentUser.id,
+      reported_id: chatState.partnerId,
+      reason: reportReasonSelect.value,
+      detail: (reportDetailInput.value || "").trim() || null
+    });
+
+    submitBtn.disabled = false;
+    submitBtn.textContent = "신고 접수하기";
+
+    if (error) { alert("신고 접수에 실패했어요: " + error.message); return; }
+
+    closeReportModal();
+    alert("신고가 접수됐어요. 검토 후 조치할게요.");
+  }
+
+  async function blockPartner() {
+    if (!chatState.open) return;
+    var partnerId = chatState.partnerId;
+    var partnerName = chatState.partnerName;
+    if (!confirm(partnerName + " 님을 차단할까요? 차단하면 서로 메시지를 주고받을 수 없고, 매칭 목록에서도 보이지 않아요.")) return;
+
+    var { error } = await sb.from("user_blocks").insert({
+      blocker_id: currentUser.id,
+      blocked_id: partnerId
+    });
+
+    if (error) { alert("차단에 실패했어요: " + error.message); return; }
+
+    closeChat();
+    await loadCandidates();
+    alert(partnerName + " 님을 차단했어요.");
+  }
+
+  document.getElementById("chatReportBtn").addEventListener("click", openReportModal);
+  document.getElementById("chatBlockBtn").addEventListener("click", blockPartner);
+  document.getElementById("reportCancelBtn").addEventListener("click", closeReportModal);
+  document.getElementById("reportSubmitBtn").addEventListener("click", submitReport);
+  reportOverlay.addEventListener("click", function (e) { if (e.target === reportOverlay) closeReportModal(); });
+
   function renderContractButton() {
     var row = chatState.contractRow;
     var iAmA = currentUser.id === chatState.userA;
@@ -2475,7 +2844,15 @@
     }
   }
 
-  contractBtn.addEventListener("click", confirmContract);
+  contractBtn.addEventListener("click", function () {
+    if (contractBtn.disabled || !chatState.open) return;
+    var isAccept = contractBtn.textContent === "수락";
+    var msg = isAccept
+      ? chatState.partnerName + " 님의 계약 제안을 수락하시겠습니까?"
+      : "정말 " + chatState.partnerName + " 님과 계약하시겠습니까?";
+    if (!confirm(msg)) return;
+    confirmContract();
+  });
 
   /* =========================================================
      6. PAGE 4 : CONTRACT GENERATOR
@@ -2618,6 +2995,25 @@
 
   document.getElementById("backToMatchBtn").addEventListener("click", function () {
     if (contractRealtimeChannel) { sb.removeChannel(contractRealtimeChannel); contractRealtimeChannel = null; }
+    showOnly("match");
+    loadCandidates();
+    checkResumableContract();
+  });
+
+  document.getElementById("cancelContractBtn").addEventListener("click", async function () {
+    if (!currentContract) return;
+    var iAmA = currentUser.id === currentContract.user_a;
+    var partnerId = iAmA ? currentContract.user_b : currentContract.user_a;
+    var partnerName = await nameForId(partnerId);
+
+    if (!confirm(partnerName + " 님과의 계약을 정말 취소하시겠습니까? 지금까지 작성한 내용이 모두 삭제되고 되돌릴 수 없어요.")) return;
+
+    var contractId = currentContract.id;
+    var { error } = await sb.from("contract_requests").delete().eq("id", contractId);
+    if (error) { alert("계약 취소에 실패했어요: " + error.message); return; }
+
+    if (contractRealtimeChannel) { sb.removeChannel(contractRealtimeChannel); contractRealtimeChannel = null; }
+    currentContract = null;
     showOnly("match");
     loadCandidates();
     checkResumableContract();
