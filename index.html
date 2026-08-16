@@ -2492,7 +2492,7 @@
         };
       })
       .filter(function (c) {
-        if (c.isDemo || showAllGenders) return true;
+        if (showAllGenders) return true;
         if (!currentUser.gender || !c.gender) return true;
         return c.gender === currentUser.gender;
       });
