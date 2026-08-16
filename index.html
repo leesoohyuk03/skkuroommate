@@ -1323,7 +1323,7 @@
 
       <div>
         <div class="rail-title">라이프스타일 프로필</div>
-        <p class="rail-sub">10가지 질문에 답하면 생활 패턴이 잘 맞는 룸메이트를 찾는 데 활용돼요.</p>
+        <p class="rail-sub">11가지 질문에 답하면 생활 패턴이 잘 맞는 룸메이트를 찾는 데 활용돼요.</p>
       </div>
 
       <ul class="steps" id="stepsList"></ul>
@@ -1333,7 +1333,7 @@
 
     <main class="survey-main">
       <div class="mobile-progress">
-        <span id="mobileProgressText">1 / 10 완료</span>
+        <span id="mobileProgressText">1 / 11 완료</span>
         <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
       </div>
 
@@ -1345,7 +1345,20 @@
       <form id="surveyForm">
         <!-- Q1 -->
         <div class="q-card" data-step="1">
-          <div class="q-eyebrow">Q1 · 수면 패턴</div>
+          <div class="q-eyebrow">Q1 · 캠퍼스</div>
+          <div class="q-title">재학 중인 캠퍼스를 선택해주세요</div>
+          <div class="q-hint">같은 캠퍼스 학생 위주로 매칭하는 데 활용돼요.</div>
+          <div class="q-body">
+            <div class="pill-group" data-name="campus">
+              <label><input type="radio" name="campus" value="자연과학캠퍼스(율전)" /><span class="pill">자연과학캠퍼스(율전)</span></label>
+              <label><input type="radio" name="campus" value="인문과학캠퍼스(명륜)" /><span class="pill">인문과학캠퍼스(명륜)</span></label>
+            </div>
+          </div>
+        </div>
+
+        <!-- Q2 -->
+        <div class="q-card" data-step="2">
+          <div class="q-eyebrow">Q2 · 수면 패턴</div>
           <div class="q-title">평소 취침 시간과 기상 시간이 어떻게 되나요?</div>
           <div class="q-hint">같이 사는 사람의 생활 리듬이 얼마나 겹치는지 확인하는 데 쓰여요.</div>
           <div class="q-body">
@@ -1366,9 +1379,9 @@
           </div>
         </div>
 
-        <!-- Q2 -->
-        <div class="q-card" data-step="2">
-          <div class="q-eyebrow">Q2 · 수면 패턴</div>
+        <!-- Q3 -->
+        <div class="q-card" data-step="3">
+          <div class="q-eyebrow">Q3 · 수면 패턴</div>
           <div class="q-title">알람 소리에 얼마나 민감한 편인가요?</div>
           <div class="q-hint">한 명의 알람에 다른 사람이 깨는 상황을 미리 조율하기 위한 질문이에요.</div>
           <div class="q-body">
@@ -1380,9 +1393,9 @@
           </div>
         </div>
 
-        <!-- Q3 -->
-        <div class="q-card" data-step="3">
-          <div class="q-eyebrow">Q3 · 위생 / 청소</div>
+        <!-- Q4 -->
+        <div class="q-card" data-step="4">
+          <div class="q-eyebrow">Q4 · 위생 / 청소</div>
           <div class="q-title">청소는 보통 얼마나 자주 하나요?</div>
           <div class="q-body">
             <div class="pill-group" data-name="cleaning">
@@ -1393,9 +1406,9 @@
           </div>
         </div>
 
-        <!-- Q4 -->
-        <div class="q-card" data-step="4">
-          <div class="q-eyebrow">Q4 · 위생 / 청소</div>
+        <!-- Q5 -->
+        <div class="q-card" data-step="5">
+          <div class="q-eyebrow">Q5 · 위생 / 청소</div>
           <div class="q-title">설거지는 바로 하는 편인가요?</div>
           <div class="q-body">
             <div class="pill-group" data-name="dishes">
@@ -1405,9 +1418,9 @@
           </div>
         </div>
 
-        <!-- Q5 -->
-        <div class="q-card" data-step="5">
-          <div class="q-eyebrow">Q5 · 소음 / 생활</div>
+        <!-- Q6 -->
+        <div class="q-card" data-step="6">
+          <div class="q-eyebrow">Q6 · 소음 / 생활</div>
           <div class="q-title">실내에서 전화 통화는 주로 어디서 하나요?</div>
           <div class="q-body">
             <div class="pill-group" data-name="callPlace">
@@ -1417,9 +1430,9 @@
           </div>
         </div>
 
-        <!-- Q6 -->
-        <div class="q-card" data-step="6">
-          <div class="q-eyebrow">Q6 · 소음 / 생활</div>
+        <!-- Q7 -->
+        <div class="q-card" data-step="7">
+          <div class="q-eyebrow">Q7 · 소음 / 생활</div>
           <div class="q-title">평소 이어폰(헤드폰)을 착용하는 편인가요?</div>
           <div class="q-body">
             <div class="pill-group" data-name="earphone">
@@ -1430,9 +1443,9 @@
           </div>
         </div>
 
-        <!-- Q7 -->
-        <div class="q-card" data-step="7">
-          <div class="q-eyebrow">Q7 · 사회적 성향</div>
+        <!-- Q8 -->
+        <div class="q-card" data-step="8">
+          <div class="q-eyebrow">Q8 · 사회적 성향</div>
           <div class="q-title">친구나 지인을 자취방에 초대하는 편인가요?</div>
           <div class="q-body">
             <div class="pill-group" data-name="guests">
@@ -1443,9 +1456,9 @@
           </div>
         </div>
 
-        <!-- Q8 -->
-        <div class="q-card" data-step="8">
-          <div class="q-eyebrow">Q8 · 사회적 성향</div>
+        <!-- Q9 -->
+        <div class="q-card" data-step="9">
+          <div class="q-eyebrow">Q9 · 사회적 성향</div>
           <div class="q-title">음주는 얼마나 자주 하나요?</div>
           <div class="q-body">
             <div class="pill-group" data-name="drinking">
@@ -1456,9 +1469,9 @@
           </div>
         </div>
 
-        <!-- Q9 -->
-        <div class="q-card" data-step="9">
-          <div class="q-eyebrow">Q9 · 희망 주거 조건</div>
+        <!-- Q10 -->
+        <div class="q-card" data-step="10">
+          <div class="q-eyebrow">Q10 · 희망 주거 조건</div>
           <div class="q-title">희망하는 지역은 어디인가요?</div>
           <div class="q-hint">학교(성균관대)를 기준으로 반경 몇 km 이내를 원하는지 알려주세요.</div>
           <div class="q-body">
@@ -1472,9 +1485,9 @@
           </div>
         </div>
 
-        <!-- Q10 -->
-        <div class="q-card" data-step="10">
-          <div class="q-eyebrow">Q10 · 희망 주거 조건</div>
+        <!-- Q11 -->
+        <div class="q-card" data-step="11">
+          <div class="q-eyebrow">Q11 · 희망 주거 조건</div>
           <div class="q-title">본인이 부담 가능한 보증금 · 월세 범위는요?</div>
           <div class="q-hint">예: 보증금 1,000 / 월 40~50 (단위: 만 원)</div>
           <div class="q-body">
@@ -1500,7 +1513,7 @@
         </div>
 
         <div class="submit-row">
-          <span class="submit-note" id="answeredCount">0 / 10 문항 응답</span>
+          <span class="submit-note" id="answeredCount">0 / 11 문항 응답</span>
           <button type="submit" class="btn btn-primary" id="submitBtn">프로필 제출하고 유형 보기</button>
         </div>
       </form>
@@ -1558,6 +1571,10 @@
       <label class="gender-filter-toggle">
         <input type="checkbox" id="showAllGendersToggle" />
         <span>다른 성별 후보도 보기</span>
+      </label>
+      <label class="gender-filter-toggle">
+        <input type="checkbox" id="showAllCampusesToggle" />
+        <span>다른 캠퍼스도 보기</span>
       </label>
       <div class="candidate-list" id="candidateList">
         <div class="empty-note">아직 다른 학생의 응답이 없어요. 친구에게 링크를 공유해보세요.</div>
@@ -1841,6 +1858,7 @@
   var otpSecondsLeft = 120;
   var pendingEmail = "";
   var myPct = null;             // computed axis percentages for current user
+  var myCampus = null;          // selected campus for current user's survey
   var currentContract = null;   // active contract_requests row while on page 4
 
   var pages = {
@@ -2171,7 +2189,7 @@
      3. PAGE 2 : SURVEY
   ========================================================= */
   var QUESTION_LABELS = [
-    "취침·기상 시간", "알람 민감도", "청소 주기", "설거지 습관",
+    "재학 캠퍼스", "취침·기상 시간", "알람 민감도", "청소 주기", "설거지 습관",
     "통화 장소", "이어폰 착용", "손님 초대", "음주 빈도",
     "희망 지역", "보증금·월세"
   ];
@@ -2221,6 +2239,7 @@
         .eq("id", currentUser.id)
         .maybeSingle();
       if (existing) {
+        setFieldValue("campus", existing.campus);
         setFieldValue("bedtime", existing.bedtime);
         setFieldValue("alarm", existing.alarm);
         setFieldValue("cleaning", existing.cleaning);
@@ -2256,8 +2275,8 @@
     items.forEach(function (li) {
       li.classList.toggle("active", String(parseInt(li.dataset.step, 10)) === String(stepNum));
     });
-    document.getElementById("mobileProgressText").textContent = stepNum + " / 10";
-    document.getElementById("progressFill").style.width = (stepNum / 10 * 100) + "%";
+    document.getElementById("mobileProgressText").textContent = stepNum + " / " + QUESTION_LABELS.length;
+    document.getElementById("progressFill").style.width = (stepNum / QUESTION_LABELS.length * 100) + "%";
   }
 
   function getAnsweredStepCount() {
@@ -2275,7 +2294,7 @@
   }
 
   function updateAnsweredCount() {
-    document.getElementById("answeredCount").textContent = getAnsweredStepCount() + " / 10 문항 응답";
+    document.getElementById("answeredCount").textContent = getAnsweredStepCount() + " / " + QUESTION_LABELS.length + " 문항 응답";
   }
 
   form.addEventListener("change", updateAnsweredCount);
@@ -2339,6 +2358,7 @@
     e.preventDefault();
 
     var answers = {
+      campus: fieldValue("campus"),
       bedtime: fieldValue("bedtime"),
       wakeTime: fieldValue("wakeTime"),
       alarm: fieldValue("alarm"),
@@ -2355,6 +2375,7 @@
     };
 
     myPct = computeType(answers);
+    myCampus = answers.campus || null;
 
     if (!requireConfig(null, null)) return;
 
@@ -2364,6 +2385,7 @@
 
     var { error } = await sb.from("lifestyle_profiles").upsert({
       id: currentUser.id,
+      campus: answers.campus || null,
       bedtime: answers.bedtime || null,
       wake_time: answers.wakeTime || null,
       alarm: answers.alarm || null,
@@ -2440,8 +2462,15 @@
 
   var showAllGendersToggle = document.getElementById("showAllGendersToggle");
   showAllGendersToggle.addEventListener("change", loadCandidates);
+  var showAllCampusesToggle = document.getElementById("showAllCampusesToggle");
+  showAllCampusesToggle.addEventListener("change", loadCandidates);
 
   function genderLabel(g) { return g === "male" ? "남" : g === "female" ? "여" : ""; }
+  function campusLabel(c) {
+    if (!c) return "";
+    var m = c.match(/\(([^)]+)\)/);
+    return m ? m[1] : c;
+  }
 
   async function loadCandidates() {
     var listEl = document.getElementById("candidateList");
@@ -2449,7 +2478,7 @@
 
     var { data, error } = await sb
       .from("lifestyle_profiles")
-      .select("id,diligence_pct,clean_pct,sensitivity_pct,tight_pct,type_code,profiles(name,is_demo,gender,age,college,is_smoker)")
+      .select("id,campus,diligence_pct,clean_pct,sensitivity_pct,tight_pct,type_code,profiles(name,is_demo,gender,age,college,is_smoker)")
       .neq("id", currentUser.id);
 
     if (error) {
@@ -2467,6 +2496,7 @@
     });
 
     var showAllGenders = showAllGendersToggle.checked;
+    var showAllCampuses = showAllCampusesToggle.checked;
 
     var candidates = (data || [])
       .filter(function (row) { return !blockedIds[row.id]; })
@@ -2486,6 +2516,7 @@
           age: p.age || null,
           college: p.college || null,
           isSmoker: p.is_smoker,
+          campus: row.campus || null,
           typeCode: row.type_code || typeCodeOf(pct),
           similarity: similarity,
           dist: dist
@@ -2495,6 +2526,11 @@
         if (showAllGenders) return true;
         if (!currentUser.gender || !c.gender) return true;
         return c.gender === currentUser.gender;
+      })
+      .filter(function (c) {
+        if (showAllCampuses) return true;
+        if (!myCampus || !c.campus) return true;
+        return c.campus === myCampus;
       });
 
     candidates.sort(function (a, b) { return a.dist - b.dist; });
@@ -2512,6 +2548,7 @@
       if (c.gender) metaParts.push(genderLabel(c.gender));
       if (c.age) metaParts.push(c.age + "세");
       if (c.college) metaParts.push(c.college);
+      if (c.campus) metaParts.push(campusLabel(c.campus));
       var metaHtml = metaParts.length ? '<span>' + metaParts.join(" · ") + "</span>" : "";
       var smokerHtml = c.isSmoker === true ? '<span class="badge badge-warn">흡연</span>' :
         (c.isSmoker === false ? '<span class="badge">비흡연</span>' : "");

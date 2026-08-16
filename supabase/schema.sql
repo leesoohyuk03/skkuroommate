@@ -46,6 +46,7 @@ create policy "profiles_update_own"
 -- ============================================================
 create table if not exists public.lifestyle_profiles (
   id uuid primary key references public.profiles(id) on delete cascade,
+  campus text,
   bedtime text,
   wake_time text,
   alarm text,
@@ -66,6 +67,9 @@ create table if not exists public.lifestyle_profiles (
   type_code text,
   updated_at timestamptz not null default now()
 );
+
+-- 이미 schema.sql을 실행한 적이 있는 기존 설치에도 새 컬럼이 추가되도록 보강
+alter table public.lifestyle_profiles add column if not exists campus text;
 
 alter table public.lifestyle_profiles enable row level security;
 
