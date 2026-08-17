@@ -19,18 +19,18 @@ on conflict (id) do update set
   college = excluded.college, is_smoker = excluded.is_smoker, is_demo = true;
 
 insert into public.lifestyle_profiles (
-  id, campus, bedtime, wake_time, alarm, cleaning, dishes, call_place, earphone, guests, drinking,
+  id, campus, stay_duration, bedtime, wake_time, alarm, cleaning, dishes, call_place, earphone, guests, drinking,
   radius_km, deposit, rent_min, rent_max,
   diligence_pct, clean_pct, sensitivity_pct, tight_pct, type_code, updated_at
 ) values (
-  'a89e769e-bcb6-41e6-8318-c33ba1b898d6', '자연과학캠퍼스(율전)',
+  'a89e769e-bcb6-41e6-8318-c33ba1b898d6', '자연과학캠퍼스(율전)', '한 학기',
   '24~02시', '08:20', '보통', '주 2~3회', '바로 하는 편',
   '방 안에서', '상황에 따라', '사전 협의 필수', '주 1~2회',
   1.2, 800, 35, 45,
   63, 75, 70, 91, '부깔예빠', now()
 )
 on conflict (id) do update set
-  campus = excluded.campus,
+  campus = excluded.campus, stay_duration = excluded.stay_duration,
   diligence_pct = excluded.diligence_pct, clean_pct = excluded.clean_pct,
   sensitivity_pct = excluded.sensitivity_pct, tight_pct = excluded.tight_pct,
   type_code = excluded.type_code, updated_at = now();
@@ -45,18 +45,18 @@ on conflict (id) do update set
   college = excluded.college, is_smoker = excluded.is_smoker, is_demo = true;
 
 insert into public.lifestyle_profiles (
-  id, campus, bedtime, wake_time, alarm, cleaning, dishes, call_place, earphone, guests, drinking,
+  id, campus, stay_duration, bedtime, wake_time, alarm, cleaning, dishes, call_place, earphone, guests, drinking,
   radius_km, deposit, rent_min, rent_max,
   diligence_pct, clean_pct, sensitivity_pct, tight_pct, type_code, updated_at
 ) values (
-  'd4487974-2de9-4279-a798-8de813c8858c', '인문과학캠퍼스(명륜)',
+  'd4487974-2de9-4279-a798-8de813c8858c', '인문과학캠퍼스(명륜)', '방학 기간만',
   '~24시', '07:30', '보통', '매일', '바로 하는 편',
   '방 안에서', '상황에 따라', '사전 협의 필수', '거의 안 마심',
   1.0, 1500, 55, 65,
   80, 85, 40, 25, '부깔무많', now()
 )
 on conflict (id) do update set
-  campus = excluded.campus,
+  campus = excluded.campus, stay_duration = excluded.stay_duration,
   diligence_pct = excluded.diligence_pct, clean_pct = excluded.clean_pct,
   sensitivity_pct = excluded.sensitivity_pct, tight_pct = excluded.tight_pct,
   type_code = excluded.type_code, updated_at = now();
@@ -71,18 +71,18 @@ on conflict (id) do update set
   college = excluded.college, is_smoker = excluded.is_smoker, is_demo = true;
 
 insert into public.lifestyle_profiles (
-  id, campus, bedtime, wake_time, alarm, cleaning, dishes, call_place, earphone, guests, drinking,
+  id, campus, stay_duration, bedtime, wake_time, alarm, cleaning, dishes, call_place, earphone, guests, drinking,
   radius_km, deposit, rent_min, rent_max,
   diligence_pct, clean_pct, sensitivity_pct, tight_pct, type_code, updated_at
 ) values (
-  '0d39e1ed-140c-4431-bb4e-971adeeff815', '인문과학캠퍼스(명륜)',
+  '0d39e1ed-140c-4431-bb4e-971adeeff815', '인문과학캠퍼스(명륜)', '1년',
   '02시 이후', '11:30', '잘 안 깸', '주 1회', '모아서 하는 편',
   '거실 또는 복도에서', '착용 안 함', '자유로움', '주 3회 이상',
   2.5, 500, 30, 35,
   25, 30, 60, 70, '게너예빠', now()
 )
 on conflict (id) do update set
-  campus = excluded.campus,
+  campus = excluded.campus, stay_duration = excluded.stay_duration,
   diligence_pct = excluded.diligence_pct, clean_pct = excluded.clean_pct,
   sensitivity_pct = excluded.sensitivity_pct, tight_pct = excluded.tight_pct,
   type_code = excluded.type_code, updated_at = now();
@@ -97,18 +97,18 @@ on conflict (id) do update set
   college = excluded.college, is_smoker = excluded.is_smoker, is_demo = true;
 
 insert into public.lifestyle_profiles (
-  id, campus, bedtime, wake_time, alarm, cleaning, dishes, call_place, earphone, guests, drinking,
+  id, campus, stay_duration, bedtime, wake_time, alarm, cleaning, dishes, call_place, earphone, guests, drinking,
   radius_km, deposit, rent_min, rent_max,
   diligence_pct, clean_pct, sensitivity_pct, tight_pct, type_code, updated_at
 ) values (
-  'fa32bea6-b16a-40ee-8832-40af989bf3e4', '자연과학캠퍼스(율전)',
+  'fa32bea6-b16a-40ee-8832-40af989bf3e4', '자연과학캠퍼스(율전)', '1년 (방학 제외 학기 중에만)',
   '24~02시', '09:00', '보통', '주 2~3회', '바로 하는 편',
   '거실 또는 복도에서', '항상 착용', '사전 협의 필수', '주 1~2회',
   1.8, 1000, 45, 55,
   55, 60, 65, 45, '부깔예많', now()
 )
 on conflict (id) do update set
-  campus = excluded.campus,
+  campus = excluded.campus, stay_duration = excluded.stay_duration,
   diligence_pct = excluded.diligence_pct, clean_pct = excluded.clean_pct,
   sensitivity_pct = excluded.sensitivity_pct, tight_pct = excluded.tight_pct,
   type_code = excluded.type_code, updated_at = now();

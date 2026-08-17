@@ -704,6 +704,16 @@
   .text-field input:focus, .text-field select:focus { border-color: var(--accent); }
   .unit { font-size: 0.8rem; color: var(--ink-faint); white-space: nowrap; }
 
+  .redline-list { list-style: none; display: flex; flex-direction: column; gap: 12px; margin-top: 4px; }
+  .redline-list li {
+    font-size: 0.87rem;
+    color: var(--ink-soft);
+    line-height: 1.55;
+    padding-left: 14px;
+    border-left: 2px solid var(--warn);
+  }
+  .redline-list li strong { color: var(--ink); display: block; margin-bottom: 2px; font-size: 0.9rem; }
+
   .submit-row {
     display: flex;
     align-items: center;
@@ -1331,7 +1341,7 @@
 
       <div>
         <div class="rail-title">라이프스타일 프로필</div>
-        <p class="rail-sub">11가지 질문에 답하면 생활 패턴이 잘 맞는 룸메이트를 찾는 데 활용돼요.</p>
+        <p class="rail-sub">12가지 질문에 답하면 생활 패턴이 잘 맞는 룸메이트를 찾는 데 활용돼요.</p>
       </div>
 
       <ul class="steps" id="stepsList"></ul>
@@ -1341,7 +1351,7 @@
 
     <main class="survey-main">
       <div class="mobile-progress">
-        <span id="mobileProgressText">1 / 11 완료</span>
+        <span id="mobileProgressText">1 / 12 완료</span>
         <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
       </div>
 
@@ -1366,7 +1376,20 @@
 
         <!-- Q2 -->
         <div class="q-card" data-step="2">
-          <div class="q-eyebrow">Q2 · 수면 패턴</div>
+          <div class="q-eyebrow">Q2 · 거주 기간</div>
+          <div class="q-title">거주 기간을 입력해주세요</div>
+          <div class="q-hint">예: 한 학기, 방학 기간만 등 예상하는 거주 기간을 직접 입력해주세요.</div>
+          <div class="q-body">
+            <div class="text-field" style="max-width:320px;">
+              <label for="stayDuration">거주 기간</label>
+              <input type="text" id="stayDuration" name="stayDuration" placeholder="예: 한 학기, 방학 기간만, 1년" maxlength="40" />
+            </div>
+          </div>
+        </div>
+
+        <!-- Q3 -->
+        <div class="q-card" data-step="3">
+          <div class="q-eyebrow">Q3 · 수면 패턴</div>
           <div class="q-title">평소 취침 시간과 기상 시간이 어떻게 되나요?</div>
           <div class="q-hint">같이 사는 사람의 생활 리듬이 얼마나 겹치는지 확인하는 데 쓰여요.</div>
           <div class="q-body">
@@ -1387,9 +1410,9 @@
           </div>
         </div>
 
-        <!-- Q3 -->
-        <div class="q-card" data-step="3">
-          <div class="q-eyebrow">Q3 · 수면 패턴</div>
+        <!-- Q4 -->
+        <div class="q-card" data-step="4">
+          <div class="q-eyebrow">Q4 · 수면 패턴</div>
           <div class="q-title">알람 소리에 얼마나 민감한 편인가요?</div>
           <div class="q-hint">한 명의 알람에 다른 사람이 깨는 상황을 미리 조율하기 위한 질문이에요.</div>
           <div class="q-body">
@@ -1401,9 +1424,9 @@
           </div>
         </div>
 
-        <!-- Q4 -->
-        <div class="q-card" data-step="4">
-          <div class="q-eyebrow">Q4 · 위생 / 청소</div>
+        <!-- Q5 -->
+        <div class="q-card" data-step="5">
+          <div class="q-eyebrow">Q5 · 위생 / 청소</div>
           <div class="q-title">청소는 보통 얼마나 자주 하나요?</div>
           <div class="q-body">
             <div class="pill-group" data-name="cleaning">
@@ -1414,9 +1437,9 @@
           </div>
         </div>
 
-        <!-- Q5 -->
-        <div class="q-card" data-step="5">
-          <div class="q-eyebrow">Q5 · 위생 / 청소</div>
+        <!-- Q6 -->
+        <div class="q-card" data-step="6">
+          <div class="q-eyebrow">Q6 · 위생 / 청소</div>
           <div class="q-title">설거지는 바로 하는 편인가요?</div>
           <div class="q-body">
             <div class="pill-group" data-name="dishes">
@@ -1426,9 +1449,9 @@
           </div>
         </div>
 
-        <!-- Q6 -->
-        <div class="q-card" data-step="6">
-          <div class="q-eyebrow">Q6 · 소음 / 생활</div>
+        <!-- Q7 -->
+        <div class="q-card" data-step="7">
+          <div class="q-eyebrow">Q7 · 소음 / 생활</div>
           <div class="q-title">실내에서 전화 통화는 주로 어디서 하나요?</div>
           <div class="q-body">
             <div class="pill-group" data-name="callPlace">
@@ -1438,9 +1461,9 @@
           </div>
         </div>
 
-        <!-- Q7 -->
-        <div class="q-card" data-step="7">
-          <div class="q-eyebrow">Q7 · 소음 / 생활</div>
+        <!-- Q8 -->
+        <div class="q-card" data-step="8">
+          <div class="q-eyebrow">Q8 · 소음 / 생활</div>
           <div class="q-title">평소 이어폰(헤드폰)을 착용하는 편인가요?</div>
           <div class="q-body">
             <div class="pill-group" data-name="earphone">
@@ -1451,9 +1474,9 @@
           </div>
         </div>
 
-        <!-- Q8 -->
-        <div class="q-card" data-step="8">
-          <div class="q-eyebrow">Q8 · 사회적 성향</div>
+        <!-- Q9 -->
+        <div class="q-card" data-step="9">
+          <div class="q-eyebrow">Q9 · 사회적 성향</div>
           <div class="q-title">친구나 지인을 자취방에 초대하는 편인가요?</div>
           <div class="q-body">
             <div class="pill-group" data-name="guests">
@@ -1464,9 +1487,9 @@
           </div>
         </div>
 
-        <!-- Q9 -->
-        <div class="q-card" data-step="9">
-          <div class="q-eyebrow">Q9 · 사회적 성향</div>
+        <!-- Q10 -->
+        <div class="q-card" data-step="10">
+          <div class="q-eyebrow">Q10 · 사회적 성향</div>
           <div class="q-title">음주는 얼마나 자주 하나요?</div>
           <div class="q-body">
             <div class="pill-group" data-name="drinking">
@@ -1477,9 +1500,9 @@
           </div>
         </div>
 
-        <!-- Q10 -->
-        <div class="q-card" data-step="10">
-          <div class="q-eyebrow">Q10 · 희망 주거 조건</div>
+        <!-- Q11 -->
+        <div class="q-card" data-step="11">
+          <div class="q-eyebrow">Q11 · 희망 주거 조건</div>
           <div class="q-title">희망하는 지역은 어디인가요?</div>
           <div class="q-hint">학교(성균관대)를 기준으로 반경 몇 km 이내를 원하는지 알려주세요.</div>
           <div class="q-body">
@@ -1493,9 +1516,9 @@
           </div>
         </div>
 
-        <!-- Q11 -->
-        <div class="q-card" data-step="11">
-          <div class="q-eyebrow">Q11 · 희망 주거 조건</div>
+        <!-- Q12 -->
+        <div class="q-card" data-step="12">
+          <div class="q-eyebrow">Q12 · 희망 주거 조건</div>
           <div class="q-title">본인이 부담 가능한 보증금 · 월세 범위는요?</div>
           <div class="q-hint">예: 보증금 1,000 / 월 40~50 (단위: 만 원)</div>
           <div class="q-body">
@@ -1521,7 +1544,7 @@
         </div>
 
         <div class="submit-row">
-          <span class="submit-note" id="answeredCount">0 / 11 문항 응답</span>
+          <span class="submit-note" id="answeredCount">0 / 12 문항 응답</span>
           <button type="submit" class="btn btn-primary" id="submitBtn">프로필 제출하고 유형 보기</button>
         </div>
       </form>
@@ -1692,6 +1715,19 @@
             </div>
           </div>
         </div>
+
+        <div class="q-card">
+          <div class="q-eyebrow">4 · 기본 준수사항 (Red-Line 특약)</div>
+          <div class="q-title">아래 조항은 협약서에 고정 조항으로 포함돼요</div>
+          <div class="q-body">
+            <ul class="redline-list">
+              <li><strong>흡연 / 실내 전자담배</strong>비흡연자로 체크 후 실내 흡연이 적발될 경우, 퇴실 조치 및 특수 청소비(도배·탈취 비용)를 전액 부담한다.</li>
+              <li><strong>외부인 무단 숙박</strong>사전 합의 없는 외부인 무단 숙박이 적발될 경우, 1회 경고 후 관리비 전액 부담 또는 강제 퇴실 조치한다.</li>
+              <li><strong>위생 / 청소 불이행</strong>정해진 청소 규칙을 3회 이상 상습 미이행할 경우, 전문 청소업체 비용을 해당 인원이 사비로 부담한다.</li>
+              <li><strong>2주 적응기(수습 룸메 기간)</strong>입주 후 14일 이내에 사전 입력한 생활 패턴과 실제가 명백히 다를 경우, 중도 퇴실에 따른 복비·위약금 책임은 원인 제공자가 진다.</li>
+            </ul>
+          </div>
+        </div>
       </form>
 
       <div class="sign-row">
@@ -1810,6 +1846,16 @@
     <div class="full"><hr /></div>
     <div><dt>중도 퇴실 위약금</dt><dd id="p_penalty">-</dd></div>
     <div><dt>대체 세입자 구인 의무 기간</dt><dd id="p_noticeWeeks">-</dd></div>
+    <div class="full"><hr /></div>
+    <div class="full">
+      <dt>기본 준수사항 (Red-Line 특약)</dt>
+      <dd style="font-weight:500; font-size:0.82rem; line-height:1.7; margin-top:6px;">
+        ① 흡연/실내 전자담배 — 비흡연자로 체크 후 실내 흡연 적발 시, 퇴실 조치 및 특수 청소비(도배·탈취 비용) 전액 부담<br />
+        ② 외부인 무단 숙박 — 사전 합의 없는 무단 숙박 적발 시, 1회 경고 후 관리비 전액 부담 또는 강제 퇴실<br />
+        ③ 위생/청소 불이행 — 청소 규칙 3회 이상 상습 미이행 시, 전문 청소업체 비용 해당 인원 사비 부담<br />
+        ④ 2주 적응기 — 입주 14일 이내 생활 패턴 불일치가 명백할 경우, 중도 퇴실 책임은 원인 제공자에게 귀속
+      </dd>
+    </div>
     <div class="full"><hr /></div>
     <div><dt>A 서명</dt><dd id="p_signA">미서명</dd></div>
     <div><dt>B 서명</dt><dd id="p_signB">미서명</dd></div>
@@ -2197,7 +2243,7 @@
      3. PAGE 2 : SURVEY
   ========================================================= */
   var QUESTION_LABELS = [
-    "재학 캠퍼스", "취침·기상 시간", "알람 민감도", "청소 주기", "설거지 습관",
+    "재학 캠퍼스", "거주 기간", "취침·기상 시간", "알람 민감도", "청소 주기", "설거지 습관",
     "통화 장소", "이어폰 착용", "손님 초대", "음주 빈도",
     "희망 지역", "보증금·월세"
   ];
@@ -2248,6 +2294,7 @@
         .maybeSingle();
       if (existing) {
         setFieldValue("campus", existing.campus);
+        setFieldValue("stayDuration", existing.stay_duration);
         setFieldValue("bedtime", existing.bedtime);
         setFieldValue("alarm", existing.alarm);
         setFieldValue("cleaning", existing.cleaning);
@@ -2292,7 +2339,7 @@
     var answered = 0;
     cards.forEach(function (card) {
       var radios = card.querySelectorAll('input[type="radio"]');
-      var texts = card.querySelectorAll('input[type="time"], input[type="number"]');
+      var texts = card.querySelectorAll('input[type="time"], input[type="number"], input[type="text"]');
       var ok = false;
       if (radios.length) ok = Array.prototype.some.call(radios, function (r) { return r.checked; });
       if (!ok && texts.length) ok = Array.prototype.some.call(texts, function (t) { return t.value !== ""; });
@@ -2367,6 +2414,7 @@
 
     var answers = {
       campus: fieldValue("campus"),
+      stayDuration: fieldValue("stayDuration"),
       bedtime: fieldValue("bedtime"),
       wakeTime: fieldValue("wakeTime"),
       alarm: fieldValue("alarm"),
@@ -2394,6 +2442,7 @@
     var { error } = await sb.from("lifestyle_profiles").upsert({
       id: currentUser.id,
       campus: answers.campus || null,
+      stay_duration: answers.stayDuration || null,
       bedtime: answers.bedtime || null,
       wake_time: answers.wakeTime || null,
       alarm: answers.alarm || null,
@@ -2486,7 +2535,7 @@
 
     var { data, error } = await sb
       .from("lifestyle_profiles")
-      .select("id,campus,diligence_pct,clean_pct,sensitivity_pct,tight_pct,type_code,profiles(name,is_demo,gender,age,college,is_smoker)")
+      .select("id,campus,stay_duration,diligence_pct,clean_pct,sensitivity_pct,tight_pct,type_code,profiles(name,is_demo,gender,age,college,is_smoker)")
       .neq("id", currentUser.id);
 
     if (error) {
@@ -2525,6 +2574,7 @@
           college: p.college || null,
           isSmoker: p.is_smoker,
           campus: row.campus || null,
+          stayDuration: row.stay_duration || null,
           typeCode: row.type_code || typeCodeOf(pct),
           similarity: similarity,
           dist: dist
@@ -2552,11 +2602,15 @@
 
     listEl.innerHTML = "";
     candidates.forEach(function (c) {
+      var topParts = [c.name];
+      if (c.gender) topParts.push(genderLabel(c.gender));
+      if (c.age) topParts.push(c.age + "세");
+      var nameLine = topParts.join(" · ");
+
       var metaParts = [];
-      if (c.gender) metaParts.push(genderLabel(c.gender));
-      if (c.age) metaParts.push(c.age + "세");
       if (c.college) metaParts.push(c.college);
       if (c.campus) metaParts.push(campusLabel(c.campus));
+      if (c.stayDuration) metaParts.push(c.stayDuration);
       var metaHtml = metaParts.length ? '<span>' + metaParts.join(" · ") + "</span>" : "";
       var smokerHtml = c.isSmoker === true ? '<span class="badge badge-warn">흡연</span>' :
         (c.isSmoker === false ? '<span class="badge">비흡연</span>' : "");
@@ -2567,7 +2621,7 @@
       item.innerHTML =
         '<span class="avatar">' + c.name.charAt(0) + "</span>" +
         '<span class="candidate-main">' +
-        '<span class="candidate-name">' + c.name + (c.isDemo ? ' <span class="badge" style="vertical-align:1px;">예시</span>' : "") + "</span>" +
+        '<span class="candidate-name">' + nameLine + (c.isDemo ? ' <span class="badge" style="vertical-align:1px;">예시</span>' : "") + "</span>" +
         (metaHtml || smokerHtml ? '<span class="candidate-meta">' + metaHtml + smokerHtml + "</span>" : "") +
         '<span class="candidate-code">' + c.typeCode + "</span>" +
         "</span>" +
